@@ -2,25 +2,125 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+  --primary: #f97316;
+  --primary-dark: #ea580c;
+  --secondary: #1e40af;
+  --accent: #f59e0b;
+  --sports-green: #16a34a;
+  --sports-blue: #2563eb;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-sports-green: var(--sports-green);
+  --color-sports-blue: var(--sports-blue);
+  --font-sans: var(--font-sora);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sora), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Sports-themed gradient backgrounds */
+.sports-gradient {
+  background: linear-gradient(135deg, #f97316 0%, #1e40af 50%, #16a34a 100%);
+}
+
+.sports-gradient-text {
+  background: linear-gradient(135deg, #f97316 0%, #1e40af 50%, #16a34a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* Custom Animations for Hero Component */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 1s ease-out 0.2s both;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in 1s ease-out 0.4s both;
+}
+
+.animate-slide-up-delay {
+  animation: slide-up 1s ease-out 0.6s both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fade-in 1s ease-out 0.8s both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float 3s ease-in-out infinite 1s;
+}
+
+.animate-float-delay-2 {
+  animation: float 3s ease-in-out infinite 2s;
 }
