@@ -113,7 +113,7 @@ const clubs = [
   {
     id: 22,
     name: 'Gulshan North Club',
-    logo: '/images/clubLogos/GulshanNorthClub.jpg',
+    logo: '/images/clubLogos/GulshaNorthClub.jpg',
   },
 ];
 
