@@ -105,6 +105,16 @@ const clubs = [
     name: 'Uttara Club Limited',
     logo: '/images/clubLogos/UttaraClubLimited-01.png',
   },
+  {
+    id: 21,
+    name: 'Dutch Club',
+    logo: '/images/clubLogos/Dutchclub.jpg',
+  },
+  {
+    id: 22,
+    name: 'Gulshan North Club',
+    logo: '/images/clubLogos/GulshanNorthClub.jpg',
+  },
 ];
 
 const ClubPage = () => {
