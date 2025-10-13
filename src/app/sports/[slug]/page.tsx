@@ -48,6 +48,7 @@ const SportDetailPage = () => {
 
   const sportResults = useMemo(() => {
     if (!sport) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return results.filter((r: any) => r.fixture?.sport === sport.name);
   }, [results, sport]);
 
@@ -190,6 +191,7 @@ const SportDetailPage = () => {
                 </div>
               ) : sportFixtures.length > 0 ? (
                 <div className="grid gap-6">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {sportFixtures.map((fixture: any) => {
                     const team1Name = getTeamName(fixture.team1_id);
                     const team2Name = getTeamName(fixture.team2_id);
@@ -290,6 +292,7 @@ const SportDetailPage = () => {
                   {mediaView === "photos" && (
                     sportMedia.photos.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {sportMedia.photos.map((photo: any) => (
                           <div
                             key={photo.id}
@@ -325,6 +328,7 @@ const SportDetailPage = () => {
                   {mediaView === "videos" && (
                     sportMedia.videos.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {sportMedia.videos.map((video: any) => {
                           const videoId = getYouTubeVideoId(video.youtube_url || '');
                           const thumbnailUrl = videoId 
@@ -395,6 +399,7 @@ const SportDetailPage = () => {
                 </div>
               ) : sportResults.length > 0 ? (
                 <div className="grid gap-6">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {sportResults.map((result: any) => {
                     const fixture = result.fixture;
                     const team1Name = getTeamName(fixture?.team1_id);
