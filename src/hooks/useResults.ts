@@ -75,7 +75,8 @@ export function useResults() {
       if (insertError) throw insertError;
 
       // Update fixture status to 'completed'
-      await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
         .from('fixtures')
         .update({ status: 'completed' })
         .eq('id', resultData.fixture_id);
@@ -114,15 +115,16 @@ export function useResults() {
 
   async function deleteResult(id: string, fixtureId: string) {
     try {
-      const { error: deleteError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: deleteError } = await (supabase as any)
         .from('results')
         .delete()
         .eq('id', id);
 
       if (deleteError) throw deleteError;
-
       // Update fixture status back to 'scheduled'
-      await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
         .from('fixtures')
         .update({ status: 'scheduled' })
         .eq('id', fixtureId);
