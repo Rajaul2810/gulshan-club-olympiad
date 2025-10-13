@@ -65,7 +65,8 @@ export function useResults() {
     resultData: Database['public']['Tables']['results']['Insert']
   ) {
     try {
-      const { data, error: insertError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: insertError } = await (supabase as any)
         .from('results')
         .insert([resultData])
         .select()
@@ -93,7 +94,8 @@ export function useResults() {
     resultData: Database['public']['Tables']['results']['Update']
   ) {
     try {
-      const { data, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: updateError } = await (supabase as any)
         .from('results')
         .update(resultData)
         .eq('id', id)

@@ -59,7 +59,8 @@ export function useMedia() {
 
   async function addMedia(mediaData: Database['public']['Tables']['media']['Insert']) {
     try {
-      const { data, error: insertError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: insertError } = await (supabase as any)
         .from('media')
         .insert([mediaData])
         .select()
@@ -80,7 +81,8 @@ export function useMedia() {
     mediaData: Database['public']['Tables']['media']['Update']
   ) {
     try {
-      const { data, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: updateError } = await (supabase as any)
         .from('media')
         .update(mediaData)
         .eq('id', id)

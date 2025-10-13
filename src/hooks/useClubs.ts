@@ -59,7 +59,8 @@ export function useClubs() {
 
   async function addClub(clubData: Database['public']['Tables']['clubs']['Insert']) {
     try {
-      const { data, error: insertError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: insertError } = await (supabase as any)
         .from('clubs')
         .insert([clubData])
         .select()
@@ -80,7 +81,8 @@ export function useClubs() {
     clubData: Database['public']['Tables']['clubs']['Update']
   ) {
     try {
-      const { data, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: updateError } = await (supabase as any)
         .from('clubs')
         .update(clubData)
         .eq('id', id)

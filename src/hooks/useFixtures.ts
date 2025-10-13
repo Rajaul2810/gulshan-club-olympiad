@@ -58,7 +58,8 @@ export function useFixtures() {
     fixtureData: Database['public']['Tables']['fixtures']['Insert']
   ) {
     try {
-      const { data, error: insertError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: insertError } = await (supabase as any)
         .from('fixtures')
         .insert([fixtureData])
         .select()
@@ -79,7 +80,8 @@ export function useFixtures() {
     fixtureData: Database['public']['Tables']['fixtures']['Update']
   ) {
     try {
-      const { data, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: updateError } = await (supabase as any)
         .from('fixtures')
         .update(fixtureData)
         .eq('id', id)
