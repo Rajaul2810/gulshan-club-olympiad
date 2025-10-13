@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <Hero />
       <MessageSection />
-      <ClubSection />
+      {/* <ClubSection /> */}
       <SponsorsSection />
       <SportsCategorySection />
     </>

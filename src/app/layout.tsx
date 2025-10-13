@@ -11,9 +11,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "Gulshan Club - Sports Event 2025",
+  title: "Gulshan Club Olympiad 2025",
   description:
-    "Join us for the biggest sports event of 2025 at Gulshan Club. Experience thrilling competitions, community spirit, and unforgettable moments.",
+    "Join us for the biggest sports event of 2025 at Gulshan Club Olympiad. Experience thrilling competitions, community spirit, and unforgettable moments.",
 };
 
 export default function RootLayout({

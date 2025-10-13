@@ -1,19 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { clubs } from '@/data/club';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Fixtures', href: '/fixtures' },
-    { name: 'Club', href: '/club' },
-    { name: 'Media', href: '/media' },
-    { name: 'About', href: '/about' },
+    { name: 'Photo Gallery', href: '/photo-gallery' },
+    { name: 'Press', href: '/press' },
+    { name: 'Contact Us', href: '/contact-us' },
   ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsRegistrationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <nav className="bg-neutral-950 sticky top-0 z-50 border-b-2 border-white/20">
@@ -44,6 +59,71 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* Registration Dropdown */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsRegistrationOpen(!isRegistrationOpen)}
+                  className="text-white bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 flex items-center gap-2"
+                >
+                  Registration
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isRegistrationOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isRegistrationOpen && (
+                  <div className="absolute right-0 mt-2 w-96 bg-neutral-900 border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
+                    <div className="p-4 bg-gradient-to-r from-orange-500 to-pink-500">
+                      <h3 className="text-white font-bold text-lg">Select Your Club</h3>
+                      <p className="text-white/90 text-sm">Choose a club to participate</p>
+                    </div>
+                    
+                    <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                      <div className="p-2">
+                        {clubs.map((club, index) => (
+                          <Link
+                            key={index}
+                            target="_blank"
+                            href={`http://olympiad2025.gulshanclub.com/myweb01/defaultgcl`}
+                            onClick={() => setIsRegistrationOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition-all duration-200 group"
+                          >
+                            <div className="flex-shrink-0 w-12 h-12 bg-white rounded-lg p-1 flex items-center justify-center">
+                              <Image
+                                src={club.logo}
+                                alt={club.name}
+                                width={48}
+                                height={48}
+                                className="object-contain max-w-full max-h-full"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white text-sm font-medium group-hover:text-orange-400 transition-colors truncate">
+                                {club.name}
+                              </p>
+                            </div>
+                            <svg
+                              className="w-4 h-4 text-gray-400 group-hover:text-orange-400 transition-colors"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -96,17 +176,66 @@ const Navbar = () => {
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-neutral-900 border-t border-white/20">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-violet-700 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:bg-violet-50"
+                className="text-gray-200 hover:text-orange-400 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 hover:bg-white/10"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
+            
+            {/* Mobile Registration Section */}
+            <div className="pt-4 pb-2">
+              <button
+                onClick={() => setIsRegistrationOpen(!isRegistrationOpen)}
+                className="w-full text-white bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 px-4 py-3 rounded-lg text-base font-semibold transition-all duration-200 flex items-center justify-between"
+              >
+                Registration
+                <svg
+                  className={`w-5 h-5 transition-transform duration-200 ${isRegistrationOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Mobile Clubs List */}
+              {isRegistrationOpen && (
+                <div className="mt-2 max-h-80 overflow-y-auto bg-neutral-800 rounded-lg p-2">
+                  {clubs.map((club, index) => (
+                    <Link
+                      key={index}
+                      target="_blank"
+                      href={`http://olympiad2025.gulshanclub.com/myweb01/defaultgcl`}
+                      onClick={() => {
+                        setIsRegistrationOpen(false);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200"
+                    >
+                      <div className="flex-shrink-0 w-10 h-10 bg-white rounded-lg p-1 flex items-center justify-center">
+                        <Image
+                          src={club.logo}
+                          alt={club.name}
+                          width={40}
+                          height={40}
+                          className="object-contain max-w-full max-h-full"
+                        />
+                      </div>
+                      <p className="text-white text-sm font-medium flex-1">
+                        {club.name}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

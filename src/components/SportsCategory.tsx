@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
-const sportsCategories = [
+export const sportsCategories = [
   {
     name: "Arm Wrestling 55-60 KG Women",
     icon: "💪",
@@ -236,6 +237,16 @@ const sportsCategories = [
   },
 ];
 
+// Helper function to convert sport name to URL slug
+export const sportNameToSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .trim();
+};
+
 const SportsCategorySection = () => {
   return (
     <div className="min-h-screen bg-neutral-900">
@@ -256,8 +267,9 @@ const SportsCategorySection = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
               {sportsCategories.map((sport, index) => (
-                <div
+                <Link
                   key={sport.name}
+                  href={`/sports/${sportNameToSlug(sport.name)}`}
                   className="relative group"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
@@ -267,7 +279,7 @@ const SportsCategorySection = () => {
                   ></div>
 
                   {/* Main Card */}
-                  <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 text-center">
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500 group-hover:scale-105 text-center cursor-pointer">
                     {/* Gender Badge - Top Corner */}
                     <div className="absolute top-3 right-3">
                       <span
@@ -286,8 +298,13 @@ const SportsCategorySection = () => {
                     <h3 className="text-sm font-bold text-white leading-tight">
                       {sport.name}
                     </h3>
+
+                    {/* View Details Indicator */}
+                    <div className="mt-3 text-xs text-gray-400 group-hover:text-orange-400 transition-colors duration-300">
+                      View Details →
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
