@@ -12,7 +12,6 @@ const AdminClubsPage = () => {
   const { clubs, loading, error, addClub, deleteClub } = useClubs();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);

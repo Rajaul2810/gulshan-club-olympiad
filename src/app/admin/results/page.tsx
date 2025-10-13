@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useResults } from '@/hooks/useResults';
 import { useFixtures } from '@/hooks/useFixtures';
@@ -122,12 +122,6 @@ const AdminResultsPage = () => {
     return true;
   });
 
-  const getResultBadge = (result: any) => {
-    if (!result.winner_id) {
-      return <span className="px-3 py-1 bg-gray-500/20 text-gray-300 rounded-full text-xs font-medium">Draw</span>;
-    }
-    return <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">Winner</span>;
-  };
 
   return (
     <AdminLayout>
@@ -236,13 +230,14 @@ const AdminResultsPage = () => {
         {/* Results List */}
         {!loading && (
           <div className="space-y-4">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {filteredResults.map((result: any) => {
               const fixture = result.fixture;
               const team1Name = fixture?.team1?.[0]?.name || 'Unknown Team';
               const team2Name = fixture?.team2?.[0]?.name || 'Unknown Team';
               const winnerName = result.winner?.[0]?.name;
 
-              return (
+              return (  
                 <div
                   key={result.id}
                   className="relative bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all"
@@ -363,6 +358,7 @@ const AdminResultsPage = () => {
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-orange-400 transition-all disabled:opacity-50"
                   >
                     <option value="" className="bg-neutral-900">Select a fixture</option>
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {availableFixtures.map((fixture: any) => {
                       const t1 = clubs.find(c => c.id === fixture.team1_id);
                       const t2 = clubs.find(c => c.id === fixture.team2_id);
@@ -466,7 +462,7 @@ const AdminResultsPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p className="text-blue-300 text-sm">
-                      Adding a result will automatically mark the fixture as "Completed" and update it in real-time.
+                      Adding a result will automatically mark the fixture as &quot;Completed&quot; and update it in real-time.
                     </p>
                   </div>
                 </div>

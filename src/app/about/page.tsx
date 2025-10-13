@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Message from "@/components/Message";
 
 const AboutPage = () => {
   return (
