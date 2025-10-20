@@ -54,39 +54,21 @@ export interface Database {
         Row: {
           id: string
           sport: string
-          team1_id: string
-          team2_id: string
-          date: string
-          time: string
-          venue: string
-          status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled'
-          notes: string | null
+          fixture_image: string
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           sport: string
-          team1_id: string
-          team2_id: string
-          date: string
-          time: string
-          venue: string
-          status?: 'scheduled' | 'ongoing' | 'completed' | 'cancelled'
-          notes?: string | null
+          fixture_image: string
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           sport?: string
-          team1_id?: string
-          team2_id?: string
-          date?: string
-          time?: string
-          venue?: string
-          status?: 'scheduled' | 'ongoing' | 'completed' | 'cancelled'
-          notes?: string | null
+          fixture_image?: string
           created_at?: string
           updated_at?: string
         }
@@ -132,31 +114,63 @@ export interface Database {
       results: {
         Row: {
           id: string
-          fixture_id: string
-          team1_score: number
-          team2_score: number
+          sport: string
           winner_id: string | null
+          loser_id: string | null
           notes: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          fixture_id: string
-          team1_score: number
-          team2_score: number
+          sport: string
           winner_id?: string | null
+          loser_id?: string | null
           notes?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          fixture_id?: string
-          team1_score?: number
-          team2_score?: number
+          sport?: string
           winner_id?: string | null
+          loser_id?: string | null
           notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      messages: {
+        Row: {
+          id: string
+          name: string
+          email: string
+          phone: string | null
+          subject: string
+          message: string
+          status: 'unread' | 'read' | 'replied' | 'archived'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          phone?: string | null
+          subject: string
+          message: string
+          status?: 'unread' | 'read' | 'replied' | 'archived'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          email?: string
+          phone?: string | null
+          subject?: string
+          message?: string
+          status?: 'unread' | 'read' | 'replied' | 'archived'
           created_at?: string
           updated_at?: string
         }

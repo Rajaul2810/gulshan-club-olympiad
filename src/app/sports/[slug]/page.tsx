@@ -7,7 +7,7 @@ import { sportsCategories, sportNameToSlug } from "@/components/SportsCategory";
 import { useFixtures } from "@/hooks/useFixtures";
 import { useMedia } from "@/hooks/useMedia";
 import { useResults } from "@/hooks/useResults";
-import { useClubs } from "@/hooks/useClubs";
+// import { useClubs } from "@/hooks/useClubs";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const SportDetailPage = () => {
@@ -22,7 +22,7 @@ const SportDetailPage = () => {
   const { fixtures, loading: fixturesLoading } = useFixtures();
   const { media, loading: mediaLoading } = useMedia();
   const { results, loading: resultsLoading } = useResults();
-  const { clubs } = useClubs();
+  // const { clubs } = useClubs();
 
   // Find the sport from slug
   const sport = useMemo(() => {
@@ -32,9 +32,7 @@ const SportDetailPage = () => {
   // Filter data by sport name
   const sportFixtures = useMemo(() => {
     if (!sport) return [];
-    return fixtures.filter(
-      (f) => f.sport === sport.name && (f.status === 'scheduled' || f.status === 'ongoing')
-    );
+    return fixtures.filter((f) => f.sport === sport.name);
   }, [fixtures, sport]);
 
   const sportMedia = useMemo(() => {
@@ -48,15 +46,14 @@ const SportDetailPage = () => {
 
   const sportResults = useMemo(() => {
     if (!sport) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return results.filter((r: any) => r.fixture?.sport === sport.name);
+    return results.filter((r) => r.sport === sport.name);
   }, [results, sport]);
 
   // Helper to get team name
-  const getTeamName = (teamId: string) => {
-    const team = clubs.find((c) => c.id === teamId);
-    return team?.name || 'Unknown Team';
-  };
+  // const getTeamName = (teamId: string) => {
+  //   const team = clubs.find((c) => c.id === teamId);
+  //   return team?.name || 'Unknown Team';
+  // };
 
   // Helper to extract YouTube video ID
   const getYouTubeVideoId = (url: string) => {
@@ -178,10 +175,10 @@ const SportDetailPage = () => {
             <div className="space-y-8">
               <div className="text-center mb-12">
                 <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                  Match Fixtures
+                  Fixture Images
                 </h2>
                 <p className="text-gray-300">
-                  Schedule and venue information for upcoming matches
+                  Official fixture images and schedules for {sport.name}
                 </p>
               </div>
 
@@ -190,57 +187,28 @@ const SportDetailPage = () => {
                   <LoadingSpinner size="lg" />
                 </div>
               ) : sportFixtures.length > 0 ? (
-                <div className="grid gap-6">
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  {sportFixtures.map((fixture: any) => {
-                    const team1Name = getTeamName(fixture.team1_id);
-                    const team2Name = getTeamName(fixture.team2_id);
-
-                    return (
-                      <div
-                        key={fixture.id}
-                        className="relative group bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:border-orange-400/50 transition-all duration-300"
-                      >
-                        <div className="grid md:grid-cols-3 gap-6 items-center">
-                          {/* Date & Time */}
-                          <div className="text-center md:text-left">
-                            <div className="text-orange-400 font-bold text-lg mb-1">
-                              {new Date(fixture.date).toLocaleDateString("en-US", {
-                                weekday: "short",
-                                month: "short",
-                                day: "numeric",
-                              })}
-                            </div>
-                            <div className="text-gray-300 text-sm">{fixture.time}</div>
-                            <div className="text-gray-400 text-xs mt-2">📍 {fixture.venue}</div>
-                          </div>
-
-                          {/* Teams */}
-                          <div className="flex items-center justify-center gap-4">
-                            <div className="text-center flex-1">
-                              <div className="text-white font-bold text-lg">{team1Name}</div>
-                            </div>
-                            <div className="text-2xl font-bold text-gray-500">VS</div>
-                            <div className="text-center flex-1">
-                              <div className="text-white font-bold text-lg">{team2Name}</div>
-                            </div>
-                          </div>
-
-                          {/* Status */}
-                          <div className="text-center md:text-right">
-                            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-500/20 text-green-300">
-                              {fixture.status === 'scheduled' ? 'Scheduled' : 'Ongoing'}
-                            </span>
-                          </div>
-                        </div>
+                <div className="grid grid-cols-1">
+                  {sportFixtures.map((fixture) => (
+                    <div
+                      key={fixture.id}
+                      className="relative group bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 hover:border-orange-400/50 transition-all duration-300"
+                    >
+                      <div className="relative bg-neutral-800 w-full h-[500px] m-2">
+                        <Image
+                          src={fixture.fixture_image}
+                          alt={`${fixture.sport} fixture`}
+                          fill
+                          className="object-contain group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-12 bg-white/5 rounded-2xl">
-                  <p className="text-gray-400 text-lg">No upcoming fixtures at the moment</p>
-                  <p className="text-gray-500 text-sm mt-2">Check back later for schedule updates</p>
+                  <p className="text-gray-400 text-lg">No fixture images available yet</p>
+                  <p className="text-gray-500 text-sm mt-2">Fixture images will be uploaded soon</p>
                 </div>
               )}
             </div>
@@ -389,7 +357,7 @@ const SportDetailPage = () => {
                   Match Results
                 </h2>
                 <p className="text-gray-300">
-                  Recent match outcomes and standings
+                  Recent match outcomes and winners
                 </p>
               </div>
 
@@ -399,62 +367,68 @@ const SportDetailPage = () => {
                 </div>
               ) : sportResults.length > 0 ? (
                 <div className="grid gap-6">
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  {sportResults.map((result: any) => {
-                    const fixture = result.fixture;
-                    const team1Name = getTeamName(fixture?.team1_id);
-                    const team2Name = getTeamName(fixture?.team2_id);
-                    const winnerName = result.winner_id ? getTeamName(result.winner_id) : null;
+                  {sportResults.map((result) => {
+                    const winnerName = result.winner?.name || 'Unknown';
+                    const loserName = result.loser?.name || 'Unknown';
 
                     return (
                       <div
                         key={result.id}
                         className="relative group bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:border-green-400/50 transition-all duration-300"
                       >
-                        <div className="grid md:grid-cols-3 gap-6 items-center">
-                          {/* Date & Venue */}
-                          <div className="text-center md:text-left">
-                            <div className="text-green-400 font-bold text-lg mb-1">
-                              {fixture?.date ? new Date(fixture.date).toLocaleDateString("en-US", {
-                                weekday: "short",
-                                month: "short",
-                                day: "numeric",
-                              }) : 'N/A'}
-                            </div>
-                            <div className="text-gray-400 text-xs">📍 {fixture?.venue || 'TBA'}</div>
-                          </div>
-
-                          {/* Score */}
-                          <div className="flex items-center justify-center gap-4">
-                            <div className={`text-center flex-1 ${result.winner_id === fixture?.team1_id ? 'scale-105' : ''}`}>
-                              <div className={`font-bold text-lg mb-1 ${result.winner_id === fixture?.team1_id ? 'text-orange-400' : 'text-white'}`}>
-                                {team1Name}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-6">
+                            {/* Winner */}
+                            <div className="flex items-center gap-3">
+                              <span className="text-yellow-400 text-2xl">🏆</span>
+                              <div className="flex items-center gap-2">
+                                {result.winner?.logo && (
+                                  <Image
+                                    width={100}
+                                    height={100}
+                                    src={result.winner.logo} 
+                                    alt={result.winner.name}
+                                    className="w-10 h-10 rounded-full object-cover"
+                                  />
+                                )}
+                                <div>
+                                  <p className="text-white font-semibold text-lg">{winnerName}</p>
+                                  <p className="text-yellow-400 text-sm">Winner</p>
+                                </div>
                               </div>
-                              <div className="text-3xl font-bold text-white">{result.team1_score}</div>
                             </div>
                             
-                            <div className="text-2xl font-bold text-gray-500">-</div>
+                            <div className="text-gray-400 text-xl">vs</div>
                             
-                            <div className={`text-center flex-1 ${result.winner_id === fixture?.team2_id ? 'scale-105' : ''}`}>
-                              <div className={`font-bold text-lg mb-1 ${result.winner_id === fixture?.team2_id ? 'text-orange-400' : 'text-white'}`}>
-                                {team2Name}
+                            {/* Loser */}
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-400 text-2xl">😔</span>
+                              <div className="flex items-center gap-2">
+                                {result.loser?.logo && (
+                                  <Image
+                                    width={100}
+                                    height={100}
+                                    src={result.loser.logo} 
+                                    alt={result.loser.name}
+                                    className="w-10 h-10 rounded-full object-cover"
+                                  />
+                                )}
+                                <div>
+                                  <p className="text-gray-300 font-semibold text-lg">{loserName}</p>
+                                  <p className="text-gray-400 text-sm">Loser</p>
+                                </div>
                               </div>
-                              <div className="text-3xl font-bold text-white">{result.team2_score}</div>
                             </div>
                           </div>
-
-                          {/* Winner Badge */}
-                          <div className="text-center md:text-right">
-                            {winnerName ? (
-                              <div className="inline-flex flex-col items-center gap-2">
-                                <span className="text-yellow-400 text-2xl">🏆</span>
-                                <span className="text-white font-semibold text-sm">{winnerName}</span>
-                              </div>
-                            ) : (
-                              <div className="inline-flex flex-col items-center gap-2">
-                                <span className="text-gray-400 text-2xl">🤝</span>
-                                <span className="text-gray-300 font-semibold text-sm">Draw</span>
-                              </div>
+                          
+                          <div className="text-right">
+                            <div className="text-gray-400 text-sm">
+                              {new Date(result.created_at).toLocaleDateString()}
+                            </div>
+                            {result.notes && (
+                              <p className="text-gray-400 text-xs italic mt-1">
+                                {result.notes}
+                              </p>
                             )}
                           </div>
                         </div>

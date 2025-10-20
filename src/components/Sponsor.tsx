@@ -8,7 +8,7 @@ const sponsors = [
     tier: 'Diamond',
     name: 'Standard Chartered Bank',
     logo: '/images/sponser/Standard_Chartered_(2021).png',
-    description: 'Diamond Sponsor',
+    description: 'Diamond Partner',
     color: 'from-cyan-400 to-blue-500',
     bgColor: 'bg-gradient-to-br from-cyan-500/20 to-blue-600/20',
     borderColor: 'border-cyan-400/30',
@@ -18,7 +18,7 @@ const sponsors = [
     tier: 'Platinum',
     name: 'Prime Bank PLC',
     logo: '/images/sponser/prime.jpg',
-    description: 'Platinum Sponsor',
+    description: 'Platinum Partner',
     color: 'from-gray-400 to-gray-600',
     bgColor: 'bg-gradient-to-br from-gray-900/20 to-gray-900/20',
     borderColor: 'border-gray-400/30',
@@ -28,11 +28,21 @@ const sponsors = [
     tier: 'Gold',
     name: 'Brac Bank PLC',
     logo: '/images/sponser/Brac-Bank-Logo-Vector.png',
-    description: 'Gold Sponsor',
+    description: 'Gold Partner',
     color: 'from-yellow-400 to-orange-500',
     bgColor: 'bg-gradient-to-br from-yellow-500/20 to-orange-600/20',
     borderColor: 'border-yellow-400/30',
     glowColor: 'shadow-yellow-500/20',
+  },
+  {
+    tier: 'Silver',
+    name: 'Mutual Trust Bank PLC',
+    logo: '/images/sponser/MtbLogo-01.png',
+    description: 'Silver Partner',
+    color: 'from-green-400 to-green-600',
+    bgColor: 'bg-gradient-to-br from-green-500/20 to-green-600/20',
+    borderColor: 'border-green-400/30',
+    glowColor: 'shadow-green-500/20',
   },
 ];
 
@@ -70,7 +80,7 @@ const additionalPartners = [
   {
     tier: 'Health Partner',
     name: 'Yeak hospital',
-    logo: '/images/sponser/HealthPartner-01.png',
+    logo: '/images/sponser/health.png',
   },
   {
     tier: 'Media Partner',
@@ -107,6 +117,16 @@ const additionalPartners = [
     name: 'the business standard',
     logo: '/images/sponser/Printandmediapartners-03.png',
   },
+  {
+    tier: 'Print & Media Partner',
+    name: 'Daily Observer',
+    logo: '/images/sponser/PrintMediaPartnerDailyOvserber-01.png',
+  },
+  {
+    tier: 'Print & Media Partner',
+    name: 'Daily Sun',
+    logo: '/images/sponser/PrintMediaPartnerDailySun-01.png',
+  },
 
 ];
 
@@ -125,11 +145,11 @@ const SponsorSection = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight">
-            Our Sponsors
+            Our Partners
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full"></div>
           <p className="text-xl text-gray-300 mt-6 max-w-3xl mx-auto">
-            We are grateful to our esteemed sponsors who make Olympiad 2025 possible
+            We are grateful to our esteemed partners who make Gulshan Club Olympiad 2025 possible
           </p>
         </div>
 
@@ -153,7 +173,7 @@ const SponsorSection = () => {
                   {/* Tier Badge */}
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className={`px-6 py-3 bg-gradient-to-r ${sponsor.color} text-white rounded-full text-base sm:text-lg font-bold shadow-lg`}>
-                      {sponsor.tier} Sponsor
+                      {sponsor.tier} Partner
                     </div>
                   </div>
 
@@ -214,7 +234,7 @@ const SponsorSection = () => {
                     {/* Tier Badge */}
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <div className={`px-4 py-2 bg-gradient-to-r ${sponsor.color} text-white rounded-full text-xs sm:text-sm font-bold shadow-lg`}>
-                        {sponsor.tier} Sponsor
+                        {sponsor.tier} Partner
                       </div>
                     </div>
 
@@ -262,10 +282,10 @@ const SponsorSection = () => {
         <div className="mt-20">
           <div className="text-center mb-12">
             <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              Additional Partners
+              Other Partners
             </h3>
             <p className="text-gray-300">
-              Special thanks to all our valued partners
+              Special thanks to all our valued other partners
             </p>
           </div>
 
@@ -312,7 +332,7 @@ const SponsorSection = () => {
         <div className="text-center mt-16">
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-full px-8 py-4 border border-white/20">
             <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
-            <span className="text-white font-semibold">Thank you for making Olympiad 2025 possible</span>
+            <span className="text-white font-semibold">Thank you for making Gulshan Club Olympiad 2025 possible</span>
             <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
           </div>
         </div>

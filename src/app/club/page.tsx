@@ -3,10 +3,13 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { clubs } from '@/data/club';
+import { useClubs } from '@/hooks/useClubs';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 
 const ClubPage = () => {
+  const { clubs, loading } = useClubs();
+
   return (
     <div className="min-h-screen bg-neutral-900">
       <main className="">
@@ -23,7 +26,7 @@ const ClubPage = () => {
             </h1>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              20 esteemed clubs from across Bangladesh joining us for Olympiad 2025
+              {loading ? 'Loading clubs...' : `${clubs.length} esteemed clubs from across Bangladesh joining us for Olympiad 2025`}
             </p>
           </div>
         </section>
@@ -31,35 +34,59 @@ const ClubPage = () => {
         {/* Clubs Grid */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-neutral-900">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {clubs.map((club, index) => (
-                <div
-                  key={club.id}
-                  className="relative group flex flex-col items-center bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="mb-4 w-full flex justify-center">
-                    <div className="relative bg-white rounded-xl p-2 border border-white/20 shadow-lg flex items-center justify-center h-24 w-36">
-                      <Image
-                        src={club.logo}
-                        alt={`${club.name} Logo`}
-                        width={200}
-                        height={200}
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-4 text-center line-clamp-2">{club.name}</h3>
-                  <Link
-                    href={`http://olympiad2025.gulshanclub.com/myweb01/defaultgcl`}
-                    target="_blank"
-                    className="mt-auto px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-full shadow hover:from-orange-600 hover:to-pink-600 transition"
+            {loading ? (
+              <div className="flex justify-center py-12">
+                <LoadingSpinner size="lg" />
+              </div>
+            ) : clubs.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {clubs.map((club, index) => (
+                  <div
+                    key={club.id}
+                    className="relative group flex flex-col items-center bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:border-orange-400/50 transition-all duration-300"
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    Participate
-                  </Link>
-                </div>
-              ))}
-            </div>
+                    <div className="mb-4 w-full flex justify-center">
+                      <div className="relative bg-white rounded-xl p-2 border border-white/20 shadow-lg flex items-center justify-center h-24 w-36 group-hover:scale-105 transition-transform duration-300">
+                        <Image
+                          src={club.logo}
+                          alt={`${club.name} Logo`}
+                          width={200}
+                          height={200}
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2 text-center line-clamp-2">{club.name}</h3>
+                    
+                    {/* Club Details */}
+                    <div className="text-center mb-4 space-y-1">
+                      {club.contact_person && (
+                        <p className="text-gray-400 text-sm">Contact: {club.contact_person}</p>
+                      )}
+                      {club.email && (
+                        <p className="text-gray-400 text-sm">{club.email}</p>
+                      )}
+                      {club.phone && (
+                        <p className="text-gray-400 text-sm">{club.phone}</p>
+                      )}
+                    </div>
+
+                    <Link
+                      href={"/registration"}
+                      className="mt-auto px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-full shadow hover:from-orange-600 hover:to-pink-600 transition-all duration-300 hover:scale-105"
+                    >
+                      Participate
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-white/5 rounded-2xl">
+                <p className="text-gray-400 text-lg">No clubs available yet</p>
+                <p className="text-gray-500 text-sm mt-2">Clubs will be added soon</p>
+              </div>
+            )}
           </div>
         </section>
       </main>

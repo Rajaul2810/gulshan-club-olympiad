@@ -6,6 +6,7 @@ import { useClubs } from '@/hooks/useClubs';
 import { useFixtures } from '@/hooks/useFixtures';
 import { useMedia } from '@/hooks/useMedia';
 import { useResults } from '@/hooks/useResults';
+import { useMessages } from '@/hooks/useMessages';
 
 
 const AdminDashboard = () => {
@@ -13,6 +14,7 @@ const AdminDashboard = () => {
   const { fixtures, loading: fixturesLoading } = useFixtures();
   const { media, loading: mediaLoading } = useMedia();
   const { results, loading: resultsLoading } = useResults();
+  const { messages, loading: messagesLoading } = useMessages();
 
   const stats = [
     {
@@ -42,6 +44,13 @@ const AdminDashboard = () => {
       icon: '📸',
       color: 'from-purple-500 to-pink-500',
       href: '/admin/media',
+    },
+    {
+      name: 'Messages',
+      value: messagesLoading ? '...' : messages.length.toString(),
+      icon: '💬',
+      color: 'from-cyan-500 to-blue-500',
+      href: '/admin/messages',
     },
   ];
 

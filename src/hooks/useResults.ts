@@ -3,11 +3,8 @@ import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/lib/supabase/database.types';
 
 type Result = Database['public']['Tables']['results']['Row'] & {
-  fixture?: Database['public']['Tables']['fixtures']['Row'] & {
-    team1?: { name: string };
-    team2?: { name: string };
-  };
-  winner?: { name: string };
+  winner?: { name: string; logo: string };
+  loser?: { name: string; logo: string };
 };
 
 export function useResults() {
@@ -25,7 +22,7 @@ export function useResults() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'results' },
         () => {
-          fetchResults(); // Refetch to get related data
+          fetchResults();
         }
       )
       .subscribe();
@@ -43,12 +40,8 @@ export function useResults() {
         .from('results')
         .select(`
           *,
-          fixture:fixture_id(
-            *,
-            team1:team1_id(name),
-            team2:team2_id(name)
-          ),
-          winner:winner_id(name)
+          winner:winner_id(name, logo),
+          loser:loser_id(name, logo)
         `)
         .order('created_at', { ascending: false });
 
@@ -73,13 +66,6 @@ export function useResults() {
         .single();
 
       if (insertError) throw insertError;
-
-      // Update fixture status to 'completed'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
-        .from('fixtures')
-        .update({ status: 'completed' })
-        .eq('id', resultData.fixture_id);
 
       return { data, error: null };
     } catch (err) {
@@ -113,7 +99,7 @@ export function useResults() {
     }
   }
 
-  async function deleteResult(id: string, fixtureId: string) {
+  async function deleteResult(id: string) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error: deleteError } = await (supabase as any)
@@ -122,12 +108,6 @@ export function useResults() {
         .eq('id', id);
 
       if (deleteError) throw deleteError;
-      // Update fixture status back to 'scheduled'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
-        .from('fixtures')
-        .update({ status: 'scheduled' })
-        .eq('id', fixtureId);
 
       return { success: true, error: null };
     } catch (err) {

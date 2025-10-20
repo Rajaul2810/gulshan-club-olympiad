@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const sportsShapes = [
   {
@@ -61,19 +62,19 @@ const Hero = () => {
       {/* Main Content */}
       <div className="relative z-10 w-full">
         <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Right Side - Text and Stats */}
             <div className="order-1 lg:order-1 text-center lg:text-left">
               {/* Main Heading */}
-              <div className="mb-8 animate-slide-up">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">
-                  <span className="block">Gulshan Club</span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 text-3xl sm:text-4xl lg:text-5xl mt-2">
-                    Olympiad 2025
-                  </span>
-                </h1>
-                
-                <blockquote className="mt-4 text-base sm:text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
+              <div className="mb-4 animate-slide-up">
+                <Image
+                  src="/images/heroLogo-01.png"
+                  alt="Gulshan Club Olympiad 2025"
+                  width={400}
+                  height={300}
+                  className="w-full h-auto mx-auto object-contain drop-shadow-2xl"
+                />
+                <blockquote className="mt-2 text-base sm:text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
                   &quot;Sports do not build character. They reveal it. 
                   Through the challenges, victories, and defeats on the field, we come to truly understand the strength, resilience, and unity that lie within us. Here, on this grand occasion, we gather not just to compete, but to celebrate the spirit of sportsmanship that brings out the very best in each of us, forging lifelong friendships and unforgettable memories.&quot;
                 </blockquote>

@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/lib/supabase/database.types';
 
-type Fixture = Database['public']['Tables']['fixtures']['Row'] & {
-  team1?: { name: string };
-  team2?: { name: string };
-};
+type Fixture = Database['public']['Tables']['fixtures']['Row'];
 
 export function useFixtures() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
@@ -22,7 +19,7 @@ export function useFixtures() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'fixtures' },
         () => {
-          fetchFixtures(); // Refetch to get related data
+          fetchFixtures();
         }
       )
       .subscribe();
@@ -38,12 +35,8 @@ export function useFixtures() {
       setError(null);
       const { data, error: fetchError } = await supabase
         .from('fixtures')
-        .select(`
-          *,
-          team1:team1_id(name),
-          team2:team2_id(name)
-        `)
-        .order('date', { ascending: true });
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (fetchError) throw fetchError;
       setFixtures(data || []);
