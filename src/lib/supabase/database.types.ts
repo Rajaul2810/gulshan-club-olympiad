@@ -175,6 +175,47 @@ export interface Database {
           updated_at?: string
         }
       }
+      press: {
+        Row: {
+          id: string
+          type: 'press_release' | 'news'
+          title: string
+          image: string | null
+          content: string | null
+          author_name: string | null
+          source: string | null
+          news_link: string | null
+          publish_date: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          type: 'press_release' | 'news'
+          title: string
+          image?: string | null
+          content?: string | null
+          author_name?: string | null
+          source?: string | null
+          news_link?: string | null
+          publish_date?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          type?: 'press_release' | 'news'
+          title?: string
+          image?: string | null
+          content?: string | null
+          author_name?: string | null
+          source?: string | null
+          news_link?: string | null
+          publish_date?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

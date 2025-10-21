@@ -42,11 +42,11 @@ const Navbar = () => {
           <div className="flex space-x-2 items-center">
             <Link href="/" className="flex space-x-2">
               <Image
-                src="/images/heroLogo-01.png"
+                src="/images/brand-white.png"
                 alt="Gulshan Club Logo"
-                height={80}
-                width={80}
-                className="object-contain w-full h-full"
+                width={70}
+                height={70}
+                className="object-contain"
               />
             </Link>
             <Link href="/" className="flex  space-x-2">

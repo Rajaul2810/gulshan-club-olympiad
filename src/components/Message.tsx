@@ -165,7 +165,7 @@ const MessageSection = () => {
                           alt={msg.name}
                           width={200}
                           height={200}
-                          className="rounded-2xl border-4 border-white/30 shadow-2xl object-cover w-48 h-48 lg:w-56 lg:h-56"
+                          className="rounded-2xl border-4 border-white/30 shadow-2xl object-contain w-48 h-48 lg:w-56 lg:h-56"
                           priority
                         />
 
