@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client';
 import { Database } from '@/lib/supabase/database.types';
 
 type Message = Database['public']['Tables']['messages']['Row'];
+type MessageInsert = Database['public']['Tables']['messages']['Insert'];
 
 export const useMessages = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,9 +35,15 @@ export const useMessages = () => {
     message: string;
   }) => {
     try {
-      const { data, error } = await supabase
+      const insertData: MessageInsert = {
+        ...messageData,
+        status: 'unread'
+      };
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
         .from('messages')
-        .insert([messageData])
+        .insert([insertData])
         .select()
         .single();
 
@@ -52,7 +59,8 @@ export const useMessages = () => {
 
   const updateMessageStatus = async (id: string, status: 'read' | 'replied' | 'archived') => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('messages')
         .update({ status })
         .eq('id', id);
@@ -72,7 +80,8 @@ export const useMessages = () => {
 
   const deleteMessage = async (id: string) => {
     try {
-      const { error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
         .from('messages')
         .delete()
         .eq('id', id);
