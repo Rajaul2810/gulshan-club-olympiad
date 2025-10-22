@@ -138,7 +138,14 @@ export const sportsCategories = [
     genderColor: "bg-amber-500",
   },
   {
-    name: "Padel 3 a side (Team Event)",
+    name: "Padel Men's",
+    icon: "🎾",
+    color: "from-yellow-400 to-orange-500",
+    gender: "Men",
+    genderColor: "bg-yellow-500",
+  },
+  {
+    name: "Padel Womens & Mix",
     icon: "🎾",
     color: "from-yellow-400 to-orange-500",
     gender: "Mixed",
@@ -193,13 +200,13 @@ export const sportsCategories = [
     gender: "Men",
     genderColor: "bg-blue-500",
   },
-  {
-    name: "Swimming Open",
-    icon: "🏊",
-    color: "from-cyan-400 to-blue-500",
-    gender: "Open",
-    genderColor: "bg-cyan-500",
-  },
+  // {
+  //   name: "Swimming Open",
+  //   icon: "🏊",
+  //   color: "from-cyan-400 to-blue-500",
+  //   gender: "Open",
+  //   genderColor: "bg-cyan-500",
+  // },
   {
     name: "Table Tennis Team Event",
     icon: "🏓",
@@ -215,7 +222,7 @@ export const sportsCategories = [
     genderColor: "bg-blue-500",
   },
   {
-    name: "Tennis Mix Double",
+    name: "Tennis Women's & Mixed Doubles",
     icon: "🎾",
     color: "from-green-400 to-teal-500",
     gender: "Mixed",

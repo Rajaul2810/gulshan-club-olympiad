@@ -46,7 +46,7 @@ export function useClubs() {
       const { data, error: fetchError } = await supabase
         .from('clubs')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('name', { ascending: true });
 
       if (fetchError) throw fetchError;
       setClubs(data || []);
