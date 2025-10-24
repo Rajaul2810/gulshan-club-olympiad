@@ -84,15 +84,15 @@ const Hero = () => {
               <div className="grid grid-cols-3 gap-6 mb-8 animate-fade-in-delay-2">
                 <div className="text-center lg:text-left">
                   <div className="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-1 drop-shadow">
-                    30+
+                    34
                   </div>
                   <div className="text-white text-sm font-medium">
-                    Sports Events
+                    Sports Categories
                   </div>
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-3xl sm:text-4xl font-extrabold text-violet-500 mb-1 drop-shadow">
-                    22+
+                    24
                   </div>
                   <div className="text-white text-sm font-medium">
                   Participant  Clubs
@@ -100,7 +100,7 @@ const Hero = () => {
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-3xl sm:text-4xl font-extrabold text-pink-400 mb-1 drop-shadow">
-                    1200+
+                    1215
                   </div>
                   <div className="text-white text-sm font-medium">
                     Participants

@@ -320,23 +320,23 @@ const SportsCategorySection = () => {
               <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 border border-white/20">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-orange-400 mb-1">
-                    {sportsCategories.length}
+                    17
                   </div>
                   <div className="text-white text-sm">Events</div>
                 </div>
                 <div className="w-px h-12 bg-white/20"></div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-pink-400 mb-1">
-                    32
+                    34
                   </div>
                   <div className="text-white text-sm">Categories</div>
                 </div>
                 <div className="w-px h-12 bg-white/20"></div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-400 mb-1">
-                    17
+                    24
                   </div>
-                  <div className="text-white text-sm">Sports</div>
+                  <div className="text-white text-sm">Clubs</div>
                 </div>
               </div>
             </div>

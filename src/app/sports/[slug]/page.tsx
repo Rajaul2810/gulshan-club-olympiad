@@ -218,14 +218,15 @@ const SportDetailPage = () => {
                           fill
                           className="object-contain group-hover:scale-110 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        
+                        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                         */}
                         {/* Download Button */}
                         <button
                           onClick={() => downloadImage(fixture.fixture_image, `${fixture.sport}_fixture_${fixture.id}.jpg`)}
-                          className="absolute top-4 right-4 bg-black/50 cursor-pointer hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm"
+                          className="absolute top-4 right-4 bg-pink-500 flex items-center gap-2 cursor-pointer hover:bg-pink-600 text-white p-2 rounded-md opacity-100 transition-all duration-300 backdrop-blur-sm"
                           title="Download image"
                         >
+                          <p className="text-white font-medium">Download</p>
                           <svg
                             className="w-5 h-5"
                             fill="none"
