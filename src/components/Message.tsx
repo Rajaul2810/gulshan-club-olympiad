@@ -4,6 +4,56 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 const messages = [
+
+  {
+    name: "M. A. Quader (Anu)",
+    designation: "President",
+    title: "Message from the President",
+    image: "/images/President.jpg",
+    shortMessage:
+      "On behalf of Gulshan Club Limited, I extend a warm welcome to all participating clubs, athletes, and guests joining us for the 5th Inter-Club Sports Carnival The Gulshan Club Olympiad 2025. Over the years, this Olympiad has become a proud tradition that unites clubs across Bangladesh in the spirit of sports, friendship, and healthy competition.",
+    fullMessage: (
+      <>
+        On behalf of Gulshan Club Limited, I extend a warm&nbsp;welcome&nbsp;to
+        all participating clubs, athletes, and guests joining us for the 5th
+        Inter-Club Sports Carnival The Gulshan Club Olympiad 2025. Over the
+        years, this Olympiad has become a proud tradition that unites clubs
+        across Bangladesh in the spirit of sports, friendship, and healthy
+        competition.
+        <br />
+        <br />
+        What began as a vision in 2019 has today grown into one of the most
+        anticipated events in the social club calendar. The Olympiad is a true
+        celebration of talent, teamwork, and shared values. It is not just about
+        winning medals but about building relationships, inspiring future
+        generations, and strengthening the ties between our communities.
+        <br />
+        <br />
+        The success of this event is the result of extraordinary teamwork. I
+        commend our Organizing Committee, convenors, and volunteers for their
+        dedication, and I offer special thanks to our Chairman of the Organizing
+        Committee, Mr. Tareq Rahman, for his tireless leadership and vision.
+        <br />
+        <br />
+        We also express our sincere gratitude to our sponsors and
+        partners—Standard Chartered Bank, Prime Bank PLC, Brac Bank PLC, Gulshan
+        Youth Club, and our Media Partners—for their steadfast support, which
+        makes this Olympiad possible year after year.
+        <br />
+        <br />
+        As President of Gulshan Club, I take immense pride in carrying forward
+        this legacy of unity, sportsmanship, and excellence. May this Olympiad
+        be remembered not only for its competitions but also for the friendships
+        and memories created along the way.
+        <br />
+        <br />
+        <strong>
+          Welcome to Olympiad 2025. Let us celebrate the joy of
+          sports&nbsp;together.
+        </strong>
+      </>
+    ),
+  },
   {
     name: "Tareq Rahman",
     designation: "Chairman",
@@ -54,55 +104,6 @@ const messages = [
         <strong>
           Welcome to Olympiad 2025. Let us play, compete, and celebrate as one
           family of clubs.
-        </strong>
-      </>
-    ),
-  },
-  {
-    name: "M. A. Quader (Anu)",
-    designation: "President",
-    title: "Message from the President",
-    image: "/images/President.jpg",
-    shortMessage:
-      "On behalf of Gulshan Club Limited, I extend a warm welcome to all participating clubs, athletes, and guests joining us for the 5th Inter-Club Sports Carnival The Gulshan Club Olympiad 2025. Over the years, this Olympiad has become a proud tradition that unites clubs across Bangladesh in the spirit of sports, friendship, and healthy competition.",
-    fullMessage: (
-      <>
-        On behalf of Gulshan Club Limited, I extend a warm&nbsp;welcome&nbsp;to
-        all participating clubs, athletes, and guests joining us for the 5th
-        Inter-Club Sports Carnival The Gulshan Club Olympiad 2025. Over the
-        years, this Olympiad has become a proud tradition that unites clubs
-        across Bangladesh in the spirit of sports, friendship, and healthy
-        competition.
-        <br />
-        <br />
-        What began as a vision in 2019 has today grown into one of the most
-        anticipated events in the social club calendar. The Olympiad is a true
-        celebration of talent, teamwork, and shared values. It is not just about
-        winning medals but about building relationships, inspiring future
-        generations, and strengthening the ties between our communities.
-        <br />
-        <br />
-        The success of this event is the result of extraordinary teamwork. I
-        commend our Organizing Committee, convenors, and volunteers for their
-        dedication, and I offer special thanks to our Chairman of the Organizing
-        Committee, Mr. Tareq Rahman, for his tireless leadership and vision.
-        <br />
-        <br />
-        We also express our sincere gratitude to our sponsors and
-        partners—Standard Chartered Bank, Prime Bank PLC, Brac Bank PLC, Gulshan
-        Youth Club, and our Media Partners—for their steadfast support, which
-        makes this Olympiad possible year after year.
-        <br />
-        <br />
-        As President of Gulshan Club, I take immense pride in carrying forward
-        this legacy of unity, sportsmanship, and excellence. May this Olympiad
-        be remembered not only for its competitions but also for the friendships
-        and memories created along the way.
-        <br />
-        <br />
-        <strong>
-          Welcome to Olympiad 2025. Let us celebrate the joy of
-          sports&nbsp;together.
         </strong>
       </>
     ),
