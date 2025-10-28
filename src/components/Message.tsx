@@ -70,8 +70,8 @@ const messages = [
         excellence, friendship, and celebration.
         <br />
         <br />
-        This year, we are honored to host 21 esteemed clubs, 23 teams, and more
-        than 1,000 athletes, competing across 17 sports in 32 categories. Beyond
+        This year, we are honored to host 22 esteemed clubs, 24 teams, and more
+        than 1,200 athletes, competing across 17 sports in 34 categories. Beyond
         the thrill of competition, this Olympiad is a stage for building
         friendships, strengthening unity, and deepening the bonds that connect
         our diverse communities.

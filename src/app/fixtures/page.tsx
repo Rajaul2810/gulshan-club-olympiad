@@ -7,6 +7,7 @@ import { useFixtures } from "@/hooks/useFixtures";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import SportsCategorySection from "@/components/SportsCategory";
 import Image from "next/image";
+import Link from "next/link";
 
 const FixturesPage = () => {
   const router = useRouter();
@@ -63,12 +64,23 @@ const FixturesPage = () => {
                 </span>
               </h1>
             </div>
-            <button
-              onClick={() => router.push("/club")}
-              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-all duration-300"
-            >
-              View Clubs
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 space-x-4">
+              <button
+                onClick={() => router.push("/club")}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-all duration-300"
+              >
+                View Clubs
+              </button>
+              <div className="flex flex-col sm:flex-row gap-4 animate-slide-up-delay justify-center lg:justify-start">
+                <Link
+                  href="/Fixture.pdf"
+                  target="_blank"
+                  className="bg-gradient-to-r from-blue-400 via-green-400 to-cyan-400 text-white px-8 py-4 cursor-pointer rounded-xl font-bold text-lg hover:from-blue-500 hover:to-cyan-400 transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
+                  Download Fixtures
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -85,41 +97,44 @@ const FixturesPage = () => {
         {!loading && upcomingFixtures.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3  gap-6">
             {upcomingFixtures.map((fixture) => (
-              <div key={fixture.id} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10  hover:border-white/20 transition-all duration-300 group">
+              <div
+                key={fixture.id}
+                className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10  hover:border-white/20 transition-all duration-300 group"
+              >
                 {/* Image Container */}
                 <div className="relative aspect-video">
                   <Image
                     src={fixture.fixture_image}
                     alt={`${fixture.sport} fixture`}
-                      height={700}
-                      width={400}
+                    height={700}
+                    width={400}
                     className="object-contain group-hover:scale-105 transition-transform duration-300"
                   />
-                  
+
                   {/* Download Button - Always Visible */}
                   <div className="absolute top-3 right-3">
                     <button
                       onClick={() => {
-                        const link = document.createElement('a');
+                        const link = document.createElement("a");
                         link.href = fixture.fixture_image;
                         link.download = `${fixture.sport}-fixture-${fixture.id}.jpg`;
-                        link.target = '_blank';
+                        link.target = "_blank";
                         link.click();
                       }}
                       className="bg-black/70 backdrop-blur-sm rounded-full p-2 hover:bg-black/90 transition-colors duration-200 shadow-lg"
                       title="Download Image"
                     >
-                      <svg 
-                        className="w-4 h-4 text-white" 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                         />
                       </svg>
                     </button>
@@ -136,7 +151,6 @@ const FixturesPage = () => {
                       Fixture
                     </span>
                   </div>
-                  
                 </div>
               </div>
             ))}
@@ -146,8 +160,12 @@ const FixturesPage = () => {
         {/* No Fixtures Message */}
         {!loading && upcomingFixtures.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-lg mb-4">No fixtures available</div>
-            <p className="text-gray-500 text-sm">Check back later for upcoming matches</p>
+            <div className="text-gray-400 text-lg mb-4">
+              No fixtures available
+            </div>
+            <p className="text-gray-500 text-sm">
+              Check back later for upcoming matches
+            </p>
           </div>
         )}
       </main>
