@@ -119,18 +119,28 @@ const Hero = () => {
                 <div className="flex flex-col sm:flex-row gap-4 animate-slide-up-delay justify-center lg:justify-start">
                   <button
                     onClick={() => router.push("/fixtures")}
-                    className="bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 text-white px-8 py-4 cursor-pointer rounded-xl font-bold text-lg hover:from-pink-500 hover:to-yellow-400 transition-all duration-300 transform hover:scale-105 shadow-xl"
+                    className="bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 text-white px-4 py-3 cursor-pointer rounded-xl font-bold text-md hover:from-pink-500 hover:to-yellow-400 transition-all duration-300 transform hover:scale-105 shadow-xl"
                   >
                     View Fixtures
                   </button>
                 </div>
+
                 <div className="flex flex-col sm:flex-row gap-4 animate-slide-up-delay justify-center lg:justify-start">
                   <Link
                     href="/Fixture.pdf"
                     target="_blank"
-                    className="bg-gradient-to-r from-blue-400 via-green-400 to-cyan-400 text-white px-8 py-4 cursor-pointer rounded-xl font-bold text-lg hover:from-blue-500 hover:to-cyan-400 transition-all duration-300 transform hover:scale-105 shadow-xl"
+                    className="bg-gradient-to-r from-blue-400 via-green-400 to-cyan-400 text-white px-4 py-3 cursor-pointer rounded-xl font-bold text-md hover:from-blue-500 hover:to-cyan-400 transition-all duration-300 transform hover:scale-105 shadow-xl"
                   >
                     Download Fixtures
+                  </Link>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 animate-slide-up-delay justify-center lg:justify-start">
+                  <Link
+                    href="https://docs.google.com/spreadsheets/d/1lKne5H-xRCX-T9Txe58c2JPERqgm_fQCRIhFAz_Q3Fc/edit?usp=sharing"
+                    target="_blank"
+                    className="bg-orange-400 text-white px-4 py-3 cursor-pointer rounded-xl font-bold text-md transition-all duration-300 transform hover:scale-105 shadow-xl"
+                  >
+                    Schedules & Results
                   </Link>
                 </div>
               </div>
