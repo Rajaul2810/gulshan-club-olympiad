@@ -72,10 +72,10 @@ const Hero = () => {
                   src="/images/heroLogo-01.png"
                   alt="Gulshan Club Olympiad 2025"
                   width={400}
-                  height={300}
-                  className="w-full h-auto mx-auto object-contain drop-shadow-2xl"
+                  height={200}
+                  className=" mx-auto object-contain drop-shadow-2xl"
                 />
-                <blockquote className="mt-2 text-base sm:text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
+                <blockquote className="mt-0 text-base sm:text-lg text-gray-200 mx-auto lg:mx-0">
                   &quot;Sports do not build character. They reveal it. Through
                   the challenges, victories, and defeats on the field, we come
                   to truly understand the strength, resilience, and unity that
@@ -162,9 +162,8 @@ const Hero = () => {
               <iframe
                 width="560"
                 height="415"
-                src="https://www.youtube.com/embed/kOOHGg8DMdY?si=z1NU1404_DYQf5iE"
+                src="https://www.youtube.com/embed/f2tYz-UhSmc?si=J4gyHf2RteHjuUv2"
                 title="YouTube video player"
-                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen

@@ -89,6 +89,11 @@ const additionalPartners = [
   },
   {
     tier: 'Media Partner',
+    name: 'DBC NEWS',
+    logo: '/images/sponser/DBCNews-01.png',
+  },
+  {
+    tier: 'Media Partner',
     name: 'atn',
     logo: '/images/sponser/MediaPartner-02.png',
   },

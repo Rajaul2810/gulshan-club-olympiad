@@ -432,7 +432,6 @@ const SportDetailPage = () => {
                 <div className="grid gap-6">
                   {sportResults.map((result) => {
                     const winnerName = result.winner?.name || 'Unknown';
-                    const loserName = result.loser?.name || 'Unknown';
 
                     return (
                       <div
@@ -456,29 +455,11 @@ const SportDetailPage = () => {
                                 )}
                                 <div>
                                   <p className="text-white font-semibold text-lg">{winnerName}</p>
-                                  <p className="text-yellow-400 text-sm">Winner</p>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="text-gray-400 text-xl">vs</div>
-                            
-                            {/* Loser */}
-                            <div className="flex items-center gap-3">
-                              <span className="text-gray-400 text-2xl">😔</span>
-                              <div className="flex items-center gap-2">
-                                {result.loser?.logo && (
-                                  <Image
-                                    width={100}
-                                    height={100}
-                                    src={result.loser.logo} 
-                                    alt={result.loser.name}
-                                    className="w-10 h-10 rounded-full object-cover"
-                                  />
-                                )}
-                                <div>
-                                  <p className="text-gray-300 font-semibold text-lg">{loserName}</p>
-                                  <p className="text-gray-400 text-sm">Loser</p>
+                                  {result.winner_type ? (
+                                    <p className="text-orange-400 text-sm font-medium">{result.winner_type}</p>
+                                  ) : (
+                                    <p className="text-yellow-400 text-sm">Winner</p>
+                                  )}
                                 </div>
                               </div>
                             </div>

@@ -116,7 +116,7 @@ export interface Database {
           id: string
           sport: string
           winner_id: string | null
-          loser_id: string | null
+          winner_type: string | null
           notes: string | null
           created_at: string
           updated_at: string
@@ -125,7 +125,7 @@ export interface Database {
           id?: string
           sport: string
           winner_id?: string | null
-          loser_id?: string | null
+          winner_type?: string | null
           notes?: string | null
           created_at?: string
           updated_at?: string
@@ -134,7 +134,7 @@ export interface Database {
           id?: string
           sport?: string
           winner_id?: string | null
-          loser_id?: string | null
+          winner_type?: string | null
           notes?: string | null
           created_at?: string
           updated_at?: string

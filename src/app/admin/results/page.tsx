@@ -16,7 +16,7 @@ const AdminResultsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedSport, setSelectedSport] = useState('');
   const [winnerId, setWinnerId] = useState('');
-  const [loserId, setLoserId] = useState('');
+  const [winnerType, setWinnerType] = useState('');
   const [notes, setNotes] = useState('');
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -40,18 +40,14 @@ const AdminResultsPage = () => {
     setSubmitSuccess(null);
 
     try {
-      if (!selectedSport || !winnerId || !loserId) {
+      if (!selectedSport || !winnerId) {
         throw new Error('Please fill in all required fields');
-      }
-
-      if (winnerId === loserId) {
-        throw new Error('Winner and loser cannot be the same club');
       }
 
       const { error: addError } = await addResult({
         sport: selectedSport,
         winner_id: winnerId,
-        loser_id: loserId,
+        winner_type: winnerType || null,
         notes: notes || null,
       });
 
@@ -86,7 +82,7 @@ const AdminResultsPage = () => {
   const resetForm = () => {
     setSelectedSport('');
     setWinnerId('');
-    setLoserId('');
+    setWinnerType('');
     setNotes('');
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -105,12 +101,12 @@ const AdminResultsPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Results Management</h1>
-            <p className="text-gray-400">Add match results with winner and loser clubs</p>
+            <p className="text-gray-400">Add match results with winner club</p>
           </div>
           
           <button
             onClick={() => setIsAddModalOpen(true)}
-            disabled={loading || clubs.length < 2}
+            disabled={loading || clubs.length < 1}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,10 +119,10 @@ const AdminResultsPage = () => {
         {/* Global Error */}
         {error && <ErrorMessage message={error} />}
 
-        {clubs.length < 2 && (
+        {clubs.length < 1 && (
           <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4">
             <p className="text-yellow-300 text-sm">
-              ℹ️ You need at least 2 clubs to add results. Please add clubs first.
+              ℹ️ You need at least 1 club to add results. Please add clubs first.
             </p>
           </div>
         )}
@@ -215,7 +211,8 @@ const AdminResultsPage = () => {
                             <div className="flex items-center gap-2">
                               {result.winner?.logo && (
                                 <Image
-                                fill
+                                  width={32}
+                                  height={32}
                                   src={result.winner.logo} 
                                   alt={result.winner.name}
                                   className="w-8 h-8 rounded-full object-cover"
@@ -225,23 +222,14 @@ const AdminResultsPage = () => {
                             </div>
                           </div>
                           
-                          <div className="text-gray-400 text-lg">vs</div>
-                          
-                          {/* Loser */}
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-400 text-xl">😔</span>
+                          {/* Winner Type */}
+                          {result.winner_type && (
                             <div className="flex items-center gap-2">
-                              {result.loser?.logo && (
-                                <Image
-                                  fill
-                                  src={result.loser.logo} 
-                                  alt={result.loser.name}
-                                  className="w-8 h-8 rounded-full object-cover"
-                                />
-                              )}
-                              <span className="text-gray-300">{result.loser?.name || 'Unknown'}</span>
+                              <span className="text-orange-400 text-sm font-medium bg-orange-500/20 px-3 py-1 rounded-full">
+                                {result.winner_type}
+                              </span>
                             </div>
-                          </div>
+                          )}
                         </div>
                         
                         <div className="flex items-center gap-3">
@@ -342,30 +330,25 @@ const AdminResultsPage = () => {
                   </select>
                 </div>
 
-                {/* Loser Selection */}
+                {/* Winner Type */}
                 <div>
-                  <label className="block text-white font-medium mb-2">Loser Club *</label>
-                  <select
-                    value={loserId}
-                    onChange={(e) => setLoserId(e.target.value)}
-                    required
+                  <label className="block text-white font-medium mb-2">Winner Type</label>
+                  <input
+                    type="text"
+                    value={winnerType}
+                    onChange={(e) => setWinnerType(e.target.value)}
                     disabled={submitLoading}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-orange-400 transition-all disabled:opacity-50"
-                  >
-                    <option value="" className="bg-neutral-900">Select loser</option>
-                    {clubs.map((club) => (
-                      <option key={club.id} value={club.id} className="bg-neutral-900">
-                        {club.name}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="e.g., Champion, Runner-up, First Place"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-all disabled:opacity-50"
+                  />
                 </div>
 
                 {/* Match Preview */}
-                {winnerId && loserId && selectedSport && (
+                {winnerId && selectedSport && (
                   <div className="bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-xl p-4 border border-orange-400/30">
                     <p className="text-white font-medium text-center mb-2">
-                      🏆 {clubs.find(c => c.id === winnerId)?.name} wins against {clubs.find(c => c.id === loserId)?.name}
+                      🏆 {clubs.find(c => c.id === winnerId)?.name}
+                      {winnerType && ` - ${winnerType}`}
                     </p>
                     <p className="text-gray-400 text-sm text-center">{selectedSport}</p>
                   </div>
@@ -391,7 +374,7 @@ const AdminResultsPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p className="text-blue-300 text-sm">
-                      This will add a simple result showing the winner and loser clubs for the selected sport.
+                      This will add a result showing the winner club and winner type for the selected sport.
                     </p>
                   </div>
                 </div>
@@ -411,7 +394,7 @@ const AdminResultsPage = () => {
                   </button>
                   <button
                     type="submit"
-                    disabled={submitLoading || !selectedSport || !winnerId || !loserId}
+                    disabled={submitLoading || !selectedSport || !winnerId}
                     className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {submitLoading && <LoadingSpinner size="sm" />}

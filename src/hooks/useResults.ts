@@ -4,7 +4,6 @@ import type { Database } from '@/lib/supabase/database.types';
 
 type Result = Database['public']['Tables']['results']['Row'] & {
   winner?: { name: string; logo: string };
-  loser?: { name: string; logo: string };
 };
 
 export function useResults() {
@@ -40,8 +39,7 @@ export function useResults() {
         .from('results')
         .select(`
           *,
-          winner:winner_id(name, logo),
-          loser:loser_id(name, logo)
+          winner:winner_id(name, logo)
         `)
         .order('created_at', { ascending: false });
 
