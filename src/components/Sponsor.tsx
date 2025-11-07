@@ -158,6 +158,10 @@ const SponsorSection = () => {
           </p>
         </div>
 
+        <div className="text-center mb-16">
+          <Image src="/images/venue.png" alt="Sponsor Background" width={200} height={200} className="w-100 h-100 object-contain mx-auto" />
+        </div>
+
         {/* Sponsors Grid */}
         <div className="space-y-8 lg:space-y-12">
           {/* Diamond Sponsor - Full Width, Large */}

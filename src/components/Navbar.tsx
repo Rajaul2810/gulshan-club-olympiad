@@ -37,7 +37,7 @@ const Navbar = () => {
   return (
     <nav className="bg-neutral-950 sticky top-0 z-50 border-b-2 border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex space-x-2 items-center">
             <Link href="/" className="flex space-x-2">
@@ -56,6 +56,15 @@ const Navbar = () => {
                 width={80}
                 height={80}
                 className="w-16 h-16 object-contain"
+              />
+            </Link>
+            <Link href="/" className="flex  space-x-2 ml-2">
+              <Image
+                src="/images/venue.png"
+                alt="Gulshan Club Logo"
+                width={80}
+                height={80}
+                className="w-20 h-20 object-contain"
               />
             </Link>
           </div>
