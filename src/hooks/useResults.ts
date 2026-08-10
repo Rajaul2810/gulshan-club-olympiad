@@ -1,22 +1,54 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/lib/supabase/database.types';
+import { useEvent } from '@/contexts/EventContext';
 
 type Result = Database['public']['Tables']['results']['Row'] & {
   winner?: { name: string; logo: string };
 };
 
 export function useResults() {
+  const { selectedEvent, isFallback, loading: eventLoading } = useEvent();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchResults = useCallback(async () => {
+    if (eventLoading) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
+        .from('results')
+        .select(`
+          *,
+          winner:winner_id(name, logo)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (!isFallback && selectedEvent?.id) {
+        query = query.eq('event_id', selectedEvent.id);
+      }
+
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) throw fetchError;
+      setResults(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch results');
+    } finally {
+      setLoading(false);
+    }
+  }, [eventLoading, isFallback, selectedEvent?.id]);
+
   useEffect(() => {
     fetchResults();
 
-    // Real-time subscription
     const channel = supabase
-      .channel('results-changes')
+      .channel(`results-changes-${selectedEvent?.id || 'all'}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'results' },
@@ -29,37 +61,21 @@ export function useResults() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
-
-  async function fetchResults() {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data, error: fetchError } = await supabase
-        .from('results')
-        .select(`
-          *,
-          winner:winner_id(name, logo)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
-      setResults(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch results');
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [fetchResults, selectedEvent?.id]);
 
   async function addResult(
     resultData: Database['public']['Tables']['results']['Insert']
   ) {
     try {
+      const payload = {
+        ...resultData,
+        ...(!isFallback && selectedEvent?.id ? { event_id: selectedEvent.id } : {}),
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error: insertError } = await (supabase as any)
         .from('results')
-        .insert([resultData])
+        .insert([payload])
         .select()
         .single();
 
@@ -118,7 +134,7 @@ export function useResults() {
 
   return {
     results,
-    loading,
+    loading: loading || eventLoading,
     error,
     addResult,
     updateResult,
@@ -126,4 +142,3 @@ export function useResults() {
     refetch: fetchResults,
   };
 }
-

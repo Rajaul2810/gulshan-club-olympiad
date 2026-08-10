@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import { useMessages } from '@/hooks/useMessages';
+import { useEvent } from '@/contexts/EventContext';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 const ContactUsPage = () => {
+  const { eventLabel } = useEvent();
   const { addMessage } = useMessages();
   const [formData, setFormData] = useState({
     name: '',
@@ -74,7 +76,7 @@ const ContactUsPage = () => {
             </h1>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Have questions about Olympiad 2025? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+              Have questions about {eventLabel}? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
             </p>
           </div>
         </section>

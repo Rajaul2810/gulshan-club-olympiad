@@ -9,6 +9,44 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      events: {
+        Row: {
+          id: string
+          year: number
+          slug: string
+          name: string
+          is_current: boolean
+          status: 'draft' | 'live' | 'archived'
+          logo_url: string | null
+          registration_deadline: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          year: number
+          slug: string
+          name: string
+          is_current?: boolean
+          status?: 'draft' | 'live' | 'archived'
+          logo_url?: string | null
+          registration_deadline?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          year?: number
+          slug?: string
+          name?: string
+          is_current?: boolean
+          status?: 'draft' | 'live' | 'archived'
+          logo_url?: string | null
+          registration_deadline?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       clubs: {
         Row: {
           id: string
@@ -55,6 +93,7 @@ export interface Database {
           id: string
           sport: string
           fixture_image: string
+          event_id: string | null
           created_at: string
           updated_at: string
         }
@@ -62,6 +101,7 @@ export interface Database {
           id?: string
           sport: string
           fixture_image: string
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -69,6 +109,7 @@ export interface Database {
           id?: string
           sport?: string
           fixture_image?: string
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -83,6 +124,7 @@ export interface Database {
           youtube_url: string | null
           description: string | null
           tags: string[] | null
+          event_id: string | null
           created_at: string
           updated_at: string
         }
@@ -95,6 +137,7 @@ export interface Database {
           youtube_url?: string | null
           description?: string | null
           tags?: string[] | null
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -107,6 +150,7 @@ export interface Database {
           youtube_url?: string | null
           description?: string | null
           tags?: string[] | null
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -118,6 +162,7 @@ export interface Database {
           winner_id: string | null
           winner_type: string | null
           notes: string | null
+          event_id: string | null
           created_at: string
           updated_at: string
         }
@@ -127,6 +172,7 @@ export interface Database {
           winner_id?: string | null
           winner_type?: string | null
           notes?: string | null
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -136,6 +182,7 @@ export interface Database {
           winner_id?: string | null
           winner_type?: string | null
           notes?: string | null
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -186,6 +233,7 @@ export interface Database {
           source: string | null
           news_link: string | null
           publish_date: string
+          event_id: string | null
           created_at: string
           updated_at: string
         }
@@ -199,6 +247,7 @@ export interface Database {
           source?: string | null
           news_link?: string | null
           publish_date?: string
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -212,6 +261,7 @@ export interface Database {
           source?: string | null
           news_link?: string | null
           publish_date?: string
+          event_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -228,4 +278,3 @@ export interface Database {
     }
   }
 }
-

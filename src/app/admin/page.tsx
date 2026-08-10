@@ -7,9 +7,11 @@ import { useFixtures } from '@/hooks/useFixtures';
 import { useMedia } from '@/hooks/useMedia';
 import { useResults } from '@/hooks/useResults';
 import { useMessages } from '@/hooks/useMessages';
+import { useEvent } from '@/contexts/EventContext';
 
 
 const AdminDashboard = () => {
+  const { eventLabel } = useEvent();
   const { clubs, loading: clubsLoading } = useClubs();
   const { fixtures, loading: fixturesLoading } = useFixtures();
   const { media, loading: mediaLoading } = useMedia();
@@ -67,7 +69,7 @@ const AdminDashboard = () => {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">Welcome to Olympiad 2025 Admin Panel</p>
+          <p className="text-gray-400">Welcome to {eventLabel} Admin Panel</p>
         </div>
 
         {/* Stats Grid */}

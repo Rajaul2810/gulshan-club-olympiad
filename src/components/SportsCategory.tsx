@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useEvent } from "@/contexts/EventContext";
 
 export const sportsCategories = [
   {
@@ -255,6 +256,8 @@ export const sportNameToSlug = (name: string): string => {
 };
 
 const SportsCategorySection = () => {
+  const { eventLabel } = useEvent();
+
   return (
     <div className="min-h-screen bg-neutral-900">
       <main className="pt-10">
@@ -268,7 +271,7 @@ const SportsCategorySection = () => {
               <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 Discover the exciting range of sports that will be featured in
-                Olympiad 2025
+                {` ${eventLabel}`}
               </p>
             </div>
 

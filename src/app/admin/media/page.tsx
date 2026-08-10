@@ -5,11 +5,13 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import Image from 'next/image';
 import { sportsCategories } from '@/components/SportsCategory';
 import { useMedia } from '@/hooks/useMedia';
+import { useEvent } from '@/contexts/EventContext';
 import { uploadFile } from '@/lib/supabase/client';
 import { LoadingSpinner, LoadingOverlay } from '@/components/ui/LoadingSpinner';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/ErrorMessage';
 
 const AdminMediaPage = () => {
+  const { eventLabel } = useEvent();
   const { media, loading, error, addMedia, deleteMedia } = useMedia();
   const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -170,7 +172,7 @@ const AdminMediaPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Media Management</h1>
-            <p className="text-gray-400">Manage photos and videos for Olympiad 2025</p>
+            <p className="text-gray-400">Manage photos and videos for {eventLabel}</p>
           </div>
           
           <button

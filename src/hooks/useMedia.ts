@@ -1,52 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/lib/supabase/database.types';
+import { useEvent } from '@/contexts/EventContext';
 
 type Media = Database['public']['Tables']['media']['Row'];
 
 export function useMedia() {
+  const { selectedEvent, isFallback, loading: eventLoading } = useEvent();
   const [media, setMedia] = useState<Media[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchMedia();
+  const fetchMedia = useCallback(async () => {
+    if (eventLoading) return;
 
-    // Real-time subscription
-    const channel = supabase
-      .channel('media-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'media' },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setMedia((prev) => [payload.new as Media, ...prev]);
-          } else if (payload.eventType === 'UPDATE') {
-            setMedia((prev) =>
-              prev.map((item) =>
-                item.id === payload.new.id ? (payload.new as Media) : item
-              )
-            );
-          } else if (payload.eventType === 'DELETE') {
-            setMedia((prev) => prev.filter((item) => item.id !== payload.old.id));
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  async function fetchMedia() {
     try {
       setLoading(true);
       setError(null);
-      const { data, error: fetchError } = await supabase
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
         .from('media')
         .select('*')
         .order('created_at', { ascending: false });
+
+      if (!isFallback && selectedEvent?.id) {
+        query = query.eq('event_id', selectedEvent.id);
+      }
+
+      const { data, error: fetchError } = await query;
 
       if (fetchError) throw fetchError;
       setMedia(data || []);
@@ -55,14 +37,38 @@ export function useMedia() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [eventLoading, isFallback, selectedEvent?.id]);
+
+  useEffect(() => {
+    fetchMedia();
+
+    const channel = supabase
+      .channel(`media-changes-${selectedEvent?.id || 'all'}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'media' },
+        () => {
+          fetchMedia();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchMedia, selectedEvent?.id]);
 
   async function addMedia(mediaData: Database['public']['Tables']['media']['Insert']) {
     try {
+      const payload = {
+        ...mediaData,
+        ...(!isFallback && selectedEvent?.id ? { event_id: selectedEvent.id } : {}),
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error: insertError } = await (supabase as any)
         .from('media')
-        .insert([mediaData])
+        .insert([payload])
         .select()
         .single();
 
@@ -101,7 +107,6 @@ export function useMedia() {
 
   async function deleteMedia(id: string, url?: string) {
     try {
-      // Delete from storage if it's a photo
       if (url && url.includes('media-photos')) {
         const path = url.split('/media-photos/')[1];
         if (path) {
@@ -126,7 +131,7 @@ export function useMedia() {
 
   return {
     media,
-    loading,
+    loading: loading || eventLoading,
     error,
     addMedia,
     updateMedia,
@@ -134,4 +139,3 @@ export function useMedia() {
     refetch: fetchMedia,
   };
 }
-

@@ -2,8 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useEvent } from '@/contexts/EventContext';
 
 const NotFound = () => {
+  const { eventLabel } = useEvent();
+
   return (
     <div className="min-h-screen bg-neutral-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="relative max-w-4xl mx-auto text-center">
@@ -36,7 +39,7 @@ const NotFound = () => {
             
             <p className="text-xl sm:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
               The page you&apos;re looking for doesn&apos;t exist or has been moved. 
-              Let&apos;s get you back on track to Olympiad 2025!
+              Let&apos;s get you back on track to {eventLabel}!
             </p>
           </div>
 

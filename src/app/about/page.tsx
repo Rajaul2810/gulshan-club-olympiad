@@ -1,8 +1,11 @@
 "use client";
 
 import React from "react";
+import { useEvent } from "@/contexts/EventContext";
 
 const AboutPage = () => {
+  const { eventLabel } = useEvent();
+
   return (
     <div className="min-h-screen bg-neutral-900">
       <main className="">
@@ -26,7 +29,7 @@ const AboutPage = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight">
               <span className="block">Gulshan Club</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 text-3xl sm:text-4xl lg:text-5xl mt-2">
-                Olympiad 2025
+                {eventLabel}
               </span>
             </h1>
 
@@ -206,7 +209,7 @@ const AboutPage = () => {
                 </h2>
                 <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
                 <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                  Get in touch with us for more information about Olympiad 2025
+                  Get in touch with us for more information about {eventLabel}
                   and Gulshan Club activities.
                 </p>
               </div>

@@ -1,20 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import type { Database } from '@/lib/supabase/database.types';
+import { useEvent } from '@/contexts/EventContext';
 
 type Fixture = Database['public']['Tables']['fixtures']['Row'];
 
 export function useFixtures() {
+  const { selectedEvent, isFallback, loading: eventLoading } = useEvent();
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchFixtures = useCallback(async () => {
+    if (eventLoading) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let query = (supabase as any)
+        .from('fixtures')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!isFallback && selectedEvent?.id) {
+        query = query.eq('event_id', selectedEvent.id);
+      }
+
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) throw fetchError;
+      setFixtures(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch fixtures');
+    } finally {
+      setLoading(false);
+    }
+  }, [eventLoading, isFallback, selectedEvent?.id]);
+
   useEffect(() => {
     fetchFixtures();
 
-    // Real-time subscription
     const channel = supabase
-      .channel('fixtures-changes')
+      .channel(`fixtures-changes-${selectedEvent?.id || 'all'}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'fixtures' },
@@ -27,34 +56,21 @@ export function useFixtures() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
-
-  async function fetchFixtures() {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data, error: fetchError } = await supabase
-        .from('fixtures')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
-      setFixtures(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch fixtures');
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [fetchFixtures, selectedEvent?.id]);
 
   async function addFixture(
     fixtureData: Database['public']['Tables']['fixtures']['Insert']
   ) {
     try {
+      const payload = {
+        ...fixtureData,
+        ...(!isFallback && selectedEvent?.id ? { event_id: selectedEvent.id } : {}),
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error: insertError } = await (supabase as any)
         .from('fixtures')
-        .insert([fixtureData])
+        .insert([payload])
         .select()
         .single();
 
@@ -110,7 +126,7 @@ export function useFixtures() {
 
   return {
     fixtures,
-    loading,
+    loading: loading || eventLoading,
     error,
     addFixture,
     updateFixture,
@@ -118,4 +134,3 @@ export function useFixtures() {
     refetch: fetchFixtures,
   };
 }
-

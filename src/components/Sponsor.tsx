@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useEvent } from '@/contexts/EventContext';
 
 const sponsors = [
   {
@@ -137,6 +138,8 @@ const additionalPartners = [
 
 
 const SponsorSection = () => {
+  const { eventLabel } = useEvent();
+
   return (
     <section className="relative bg-neutral-900 py-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background Elements */}
@@ -154,7 +157,7 @@ const SponsorSection = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full"></div>
           <p className="text-xl text-gray-300 mt-6 max-w-3xl mx-auto">
-            We are grateful to our esteemed partners who make Gulshan Club Olympiad 2025 possible
+            We are grateful to our esteemed partners who make Gulshan Club {eventLabel} possible
           </p>
         </div>
 
@@ -341,7 +344,7 @@ const SponsorSection = () => {
         <div className="text-center mt-16">
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-full px-8 py-4 border border-white/20">
             <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
-            <span className="text-white font-semibold">Thank you for making Gulshan Club Olympiad 2025 possible</span>
+            <span className="text-white font-semibold">Thank you for making Gulshan Club {eventLabel} possible</span>
             <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
           </div>
         </div>

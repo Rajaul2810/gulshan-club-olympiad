@@ -4,11 +4,13 @@ import { useState, useRef, FormEvent } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Image from 'next/image';
 import { useClubs } from '@/hooks/useClubs';
+import { useEvent } from '@/contexts/EventContext';
 import { uploadFile } from '@/lib/supabase/client';
 import { LoadingSpinner, LoadingOverlay } from '@/components/ui/LoadingSpinner';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/ErrorMessage';
 
 const AdminClubsPage = () => {
+  const { eventLabel } = useEvent();
   const { clubs, loading, error, addClub, deleteClub } = useClubs();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -131,7 +133,7 @@ const AdminClubsPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Clubs Management</h1>
-            <p className="text-gray-400">Manage participating clubs for Olympiad 2025</p>
+            <p className="text-gray-400">Manage participating clubs for {eventLabel}</p>
           </div>
           
           <button

@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useMedia } from '@/hooks/useMedia';
+import { useEvent } from '@/contexts/EventContext';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 const MediaPage = () => {
+  const { eventLabel } = useEvent();
   const { media, loading } = useMedia();
   const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -26,7 +28,7 @@ const MediaPage = () => {
       name: 'Photos',
       icon: '📸',
       color: 'from-pink-400 to-rose-500',
-      description: 'Capture the moments and memories from Olympiad 2025',
+      description: `Capture the moments and memories from ${eventLabel}`,
       count: photos.length,
     },
     {
@@ -56,7 +58,7 @@ const MediaPage = () => {
             </h1>
             <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-              Relive the excitement through our collection of photos and videos from Olympiad 2025
+              Relive the excitement through our collection of photos and videos from {eventLabel}
             </p>
           </div>
         </section>
@@ -102,7 +104,7 @@ const MediaPage = () => {
                   </h2>
                   <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
                   <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Capture the moments and memories from Olympiad 2025
+                    Capture the moments and memories from {eventLabel}
                   </p>
                 </div>
 

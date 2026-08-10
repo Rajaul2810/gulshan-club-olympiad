@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useFixtures } from "@/hooks/useFixtures";
+import { useEvent } from "@/contexts/EventContext";
 // import { useClubs } from "@/hooks/useClubs";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import SportsCategorySection from "@/components/SportsCategory";
@@ -11,6 +12,7 @@ import Link from "next/link";
 
 const FixturesPage = () => {
   const router = useRouter();
+  const { eventLabel } = useEvent();
   const { fixtures, loading } = useFixtures();
   // const { clubs } = useClubs();
 
@@ -53,7 +55,7 @@ const FixturesPage = () => {
             <div className="flex items-center space-x-4">
               <Image
                 src="/images/heroLogo-01.png"
-                alt="Gulshan Club Olympiad 2025"
+                alt={`Gulshan Club ${eventLabel}`}
                 width={60}
                 height={60}
                 className="object-contain"

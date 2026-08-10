@@ -3,6 +3,7 @@ import { Sora } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Providers from "@/components/Providers";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -11,9 +12,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "Gulshan Club Olympiad 2025",
+  title: "Gulshan Club Olympiad",
   description:
-    "Join us for the biggest sports event of 2025 at Gulshan Club Olympiad. Experience thrilling competitions, community spirit, and unforgettable moments.",
+    "Join us for the Gulshan Club Olympiad. Experience thrilling competitions, community spirit, and unforgettable moments.",
 };
 
 export default function RootLayout({
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sora.variable} font-sora antialiased`}>
-        <Navbar />
-        {children}
-        <Footer />
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

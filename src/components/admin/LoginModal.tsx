@@ -3,12 +3,14 @@
 import { useState, FormEvent } from 'react';
 import Image from 'next/image';
 import { login } from '@/lib/auth/adminAuth';
+import { useEvent } from '@/contexts/EventContext';
 
 interface LoginModalProps {
   onSuccess: () => void;
 }
 
 export function LoginModal({ onSuccess }: LoginModalProps) {
+  const { eventLabel } = useEvent();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -41,14 +43,14 @@ export function LoginModal({ onSuccess }: LoginModalProps) {
           <div className="mb-4 flex justify-center">
             <Image
               src="/images/Olympiad2025Logo-01.png"
-              alt="Olympiad 2025"
+              alt={eventLabel}
               width={80}
               height={80}
               className="object-contain"
             />
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Admin Login</h2>
-          <p className="text-white/90 text-sm">Olympiad 2025 Management Panel</p>
+          <p className="text-white/90 text-sm">{eventLabel} Management Panel</p>
         </div>
 
         {/* Form */}

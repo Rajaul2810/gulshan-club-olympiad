@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useEvent } from "@/contexts/EventContext";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const { year, eventLabel } = useEvent();
 
   return (
     <footer className="bg-neutral-950 text-white">
@@ -9,7 +12,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {currentYear} Gulshan Club Olympiad 2025. All rights reserved.
+              © {year} Gulshan Club {eventLabel}. All rights reserved.
             </div>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8 items-center">
               <span className="text-gray-400 text-sm flex items-center">

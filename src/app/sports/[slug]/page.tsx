@@ -7,6 +7,7 @@ import { sportsCategories, sportNameToSlug } from "@/components/SportsCategory";
 import { useFixtures } from "@/hooks/useFixtures";
 import { useMedia } from "@/hooks/useMedia";
 import { useResults } from "@/hooks/useResults";
+import { useEvent } from "@/contexts/EventContext";
 // import { useClubs } from "@/hooks/useClubs";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -14,6 +15,7 @@ const SportDetailPage = () => {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
+  const { eventLabel } = useEvent();
 
   const [activeTab, setActiveTab] = useState<"fixtures" | "media" | "results">("fixtures");
   const [mediaView, setMediaView] = useState<"photos" | "videos">("photos");
@@ -130,7 +132,7 @@ const SportDetailPage = () => {
                   {sport.gender}
                 </span>
                 <span className="text-gray-400">•</span>
-                <span className="text-gray-300">Olympiad 2025</span>
+                <span className="text-gray-300">{eventLabel}</span>
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight">

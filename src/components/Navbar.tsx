@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useClubs } from "@/hooks/useClubs";
+import YearSwitcher from "@/components/YearSwitcher";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,7 +59,7 @@ const Navbar = () => {
                 className="w-16 h-16 object-contain"
               />
             </Link>
-            <Link href="/" className="flex  space-x-2 ml-2">
+            {/* <Link href="/" className="flex  space-x-2 ml-2">
               <Image
                 src="/images/venue.png"
                 alt="Gulshan Club Logo"
@@ -66,12 +67,12 @@ const Navbar = () => {
                 height={80}
                 className="w-20 h-20 object-contain"
               />
-            </Link>
+            </Link> */}
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+            <div className="ml-10 flex items-center space-x-6">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -81,6 +82,8 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
+
+              <YearSwitcher variant="public" />
 
               {/* Registration Dropdown */}
               <div className="relative" ref={dropdownRef}>
@@ -236,6 +239,10 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+
+            <div className="px-3 py-2">
+              <YearSwitcher variant="public" />
+            </div>
 
             {/* Mobile Registration Section */}
             <div className="pt-4 pb-2">

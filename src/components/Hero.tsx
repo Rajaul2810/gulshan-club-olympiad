@@ -3,6 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useEvent } from "@/contexts/EventContext";
 
 const sportsShapes = [
   {
@@ -25,6 +26,7 @@ const sportsShapes = [
 
 const Hero = () => {
   const router = useRouter();
+  const { eventLabel } = useEvent();
   return (
     <div className="relative min-h-screen bg-neutral-950 overflow-hidden flex items-center">
       {/* Modern Sports Vibe Background */}
@@ -70,7 +72,7 @@ const Hero = () => {
               <div className="mb-4 animate-slide-up">
                 <Image
                   src="/images/heroLogo-01.png"
-                  alt="Gulshan Club Olympiad 2025"
+                  alt={`Gulshan Club ${eventLabel}`}
                   width={400}
                   height={200}
                   className=" mx-auto object-contain drop-shadow-2xl"
@@ -145,29 +147,39 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-            {/* Left Side - Image */}
-            <div className="order-2 lg:order-1 animate-fade-in">
-              {/* <div className="relative flex justify-center">
-                <div className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-orange-400 to-pink-500 opacity-30 rounded-full blur-2xl -z-10"></div>
-                <div className="relative bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl">
-                  <Image
-                    src="/images/Olympiad2025Logo-01.png"
-                    alt="Gulshan Club Olympiad 2025"
-                    width={400}
-                    height={400}
-                    className="w-full h-auto max-w-xs sm:max-w-md mx-auto object-contain drop-shadow-2xl"
+            {/* Left Side - 2025 Mockup PDF */}
+            <div className="order-2 lg:order-1 animate-fade-in w-full">
+              <div className="relative w-full overflow-hidden rounded-2xl border border-white/15 bg-white/5 shadow-2xl">
+                <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+                  <p className="text-sm font-medium text-white truncate">
+                    Olympiad 2025
+                  </p>
+                  <div className="flex shrink-0 gap-2">
+                    <Link
+                      href="/Makeup-Olympied-2025.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
+                    >
+                      Open
+                    </Link>
+                    <a
+                      href="/Makeup-Olympied-2025.pdf"
+                      download
+                      className="rounded-lg bg-gradient-to-r from-orange-500 to-pink-500 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"
+                    >
+                      Download
+                    </a>
+                  </div>
+                </div>
+                <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] max-h-[70vh]">
+                  <iframe
+                    src="/Makeup-Olympied-2025.pdf#toolbar=0&navpanes=0&view=FitH"
+                    title="Olympiad 2025 PDF"
+                    className="absolute inset-0 h-full w-full border-0"
                   />
                 </div>
-              </div> */}
-              <iframe
-                width="560"
-                height="415"
-                src="https://www.youtube.com/embed/f2tYz-UhSmc?si=J4gyHf2RteHjuUv2"
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+              </div>
               <div className="flex gap-4 justify-center mt-6">
                 {/* Facebook Icon */}
                 <a

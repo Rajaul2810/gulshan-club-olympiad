@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEvent } from '@/contexts/EventContext';
 
 const RegistrationPage = () => {
+  const { eventLabel } = useEvent();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -70,7 +72,7 @@ const RegistrationPage = () => {
 
             <p className="text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-12">
               {isExpired 
-                ? 'Registration deadline has passed. Thank you for your interest in Olympiad 2025!'
+                ? `Registration deadline has passed. Thank you for your interest in ${eventLabel}!`
                 : 'Registration is closing soon. Don\'t miss your chance to participate!'
               }
             </p>
@@ -166,7 +168,7 @@ const RegistrationPage = () => {
                 <div className="text-4xl mb-4">🏆</div>
                 <h3 className="text-xl font-bold text-white mb-4">Participating Clubs</h3>
                 <p className="text-gray-300 mb-6">
-                  Discover all the clubs participating in Olympiad 2025
+                  Discover all the clubs participating in {eventLabel}
                 </p>
                 <Link
                   href="/club"
@@ -207,7 +209,7 @@ const RegistrationPage = () => {
               Need More Information?
             </h2>
             <p className="text-xl text-gray-300 mb-8">
-              For any questions about Olympiad 2025, feel free to contact us
+              For any questions about {eventLabel}, feel free to contact us
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
