@@ -131,7 +131,8 @@ const Navbar = () => {
                           clubs.map((club) => (
                             <Link
                               key={club.id}
-                              href={"/registration"}
+                              href={"http://www.dhakasoft.net/myweb01/defaultgcl"}
+                              target="_blank"
                               onClick={() => setIsRegistrationOpen(false)}
                               className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition-all duration-200 group"
                             >
@@ -279,7 +280,8 @@ const Navbar = () => {
                     clubs.map((club) => (
                       <Link
                         key={club.id}
-                        href={"/registration"}
+                        href={"http://www.dhakasoft.net/myweb01/defaultgcl"}
+                        target="_blank"
                         onClick={() => {
                           setIsRegistrationOpen(false);
                           setIsMenuOpen(false);
