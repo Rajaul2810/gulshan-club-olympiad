@@ -17,22 +17,18 @@ export function LoginModal({ onSuccess }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // Simulate small delay for better UX
-    setTimeout(() => {
-      const result = login(email, password);
-      
-      if (result.success) {
-        onSuccess();
-      } else {
-        setError(result.error || 'Login failed');
-        setLoading(false);
-      }
-    }, 500);
+    const result = await login(email, password);
+    if (result.success) {
+      onSuccess();
+    } else {
+      setError(result.error || 'Login failed');
+      setLoading(false);
+    }
   };
 
   return (

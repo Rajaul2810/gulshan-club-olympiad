@@ -1,7 +1,7 @@
-// Simple client-side admin authentication
-const ADMIN_EMAIL = 'admin@gulshanclubolympiad.com';
-const ADMIN_PASSWORD = 'Olympiad@2025';
-const AUTH_KEY = 'olympiad_admin_auth';
+// Admin auth: credentials are checked on the server (/api/admin/login), which sets an httpOnly cookie.
+// localStorage only remembers the session for the client UI.
+const AUTH_KEY = 'olympiad_admin_auth_v2';
+const SESSION_MS = 12 * 60 * 60 * 1000;
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -20,46 +20,40 @@ export function checkAuth(): AuthState {
     }
 
     const auth = JSON.parse(stored);
-    const isValid = auth.email === ADMIN_EMAIL && auth.timestamp;
-    
-    // Optional: Check if session is less than 24 hours old
-    const now = Date.now();
-    const sessionAge = now - auth.timestamp;
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-    
-    if (sessionAge > twentyFourHours) {
+    if (!auth.email || !auth.timestamp || Date.now() - auth.timestamp > SESSION_MS) {
       localStorage.removeItem(AUTH_KEY);
       return { isAuthenticated: false, email: null };
     }
 
-    return {
-      isAuthenticated: isValid,
-      email: isValid ? auth.email : null,
-    };
+    return { isAuthenticated: true, email: auth.email };
   } catch {
     return { isAuthenticated: false, email: null };
   }
 }
 
-export function login(email: string, password: string): { success: boolean; error?: string } {
-  if (email !== ADMIN_EMAIL) {
-    return { success: false, error: 'Invalid email address' };
+export async function login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const json = await res.json();
+    if (!res.ok) return { success: false, error: json.error || 'Login failed' };
+
+    localStorage.setItem(AUTH_KEY, JSON.stringify({ email: json.email, timestamp: Date.now() }));
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Network error. Please try again.' };
   }
-
-  if (password !== ADMIN_PASSWORD) {
-    return { success: false, error: 'Invalid password' };
-  }
-
-  const authData = {
-    email: ADMIN_EMAIL,
-    timestamp: Date.now(),
-  };
-
-  localStorage.setItem(AUTH_KEY, JSON.stringify(authData));
-  return { success: true };
 }
 
 export function logout(): void {
   localStorage.removeItem(AUTH_KEY);
+  fetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
 }
 
+/** Call when an admin API returns 401 so the UI asks for login again. */
+export function clearLocalAuth(): void {
+  localStorage.removeItem(AUTH_KEY);
+}

@@ -1,233 +1,143 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEvent } from '@/contexts/EventContext';
+import { useClubs } from '@/hooks/useClubs';
+import ClubLoginModal from '@/components/registration/ClubLoginModal';
+
+type ClubCard = { name: string; slug: string; logo: string };
+
+const STEPS = [
+  { icon: '🏛️', title: 'Select your club', text: 'Find your club in the list below.' },
+  { icon: '🔐', title: 'Log in', text: 'Use the username & password given by the organisers.' },
+  { icon: '📝', title: 'Register players', text: 'Add, edit or remove players any time before the deadline.' },
+];
+
+function formatDate(date: string) {
+  return new Date(`${date}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
 
 const RegistrationPage = () => {
-  const { eventLabel } = useEvent();
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const router = useRouter();
+  const { currentEvent, eventLabel } = useEvent();
+  const { clubs, loading } = useClubs();
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState<ClubCard | null>(null);
 
-  useEffect(() => {
-    // Registration deadline was set to a past date (expired)
-    const deadlineDate = new Date("2024-12-31T23:59:59").getTime();
+  const deadline = currentEvent?.registration_deadline ?? null;
+  const isOpen = !deadline || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka' }).format(new Date()) <= deadline;
 
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = deadlineDate - now;
-
-      if (distance > 0) {
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
-        });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const isExpired = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+  const visibleClubs = useMemo(
+    () =>
+      clubs
+        .filter((c) => c.status === 'active')
+        .filter((c) => c.name.toLowerCase().includes(search.toLowerCase())),
+    [clubs, search]
+  );
 
   return (
     <div className="min-h-screen bg-neutral-900">
       <main>
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-neutral-900 via-red-900 to-neutral-800 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          {/* Background Elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-tr from-red-500 to-orange-500 opacity-20 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-yellow-400 to-red-500 opacity-15 rounded-full blur-3xl animate-bounce"></div>
-            <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-gradient-to-tl from-red-400 to-pink-400 opacity-10 rounded-full blur-2xl animate-ping"></div>
+        <section className="relative bg-gradient-to-br from-neutral-900 via-orange-950 to-neutral-800 py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-tr from-orange-500 to-pink-500 opacity-20 rounded-full blur-3xl" />
+            <div className="absolute bottom-10 right-10 w-56 h-56 bg-gradient-to-br from-yellow-400 to-red-500 opacity-10 rounded-full blur-3xl" />
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto text-center">
-            {/* Status Badge */}
-            <div className="mb-8">
-              <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-300 px-6 py-3 rounded-full text-lg font-medium border border-red-500/30">
-                <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
-                Registration Closed
-              </div>
+          <div className="relative max-w-5xl mx-auto text-center">
+            <div
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border mb-6 ${
+                isOpen ? 'bg-green-500/15 text-green-300 border-green-500/30' : 'bg-red-500/15 text-red-300 border-red-500/30'
+              }`}
+            >
+              <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${isOpen ? 'bg-green-400' : 'bg-red-400'}`} />
+              {isOpen ? 'Registration Open' : 'Registration Closed'}
+              {deadline && <span className="text-white/70">· {isOpen ? 'closes' : 'closed'} {formatDate(deadline)}</span>}
             </div>
 
-            <Image 
-              src="/images/heroLogo-01.png"
-              alt="Registration Closed"
-              width={200}
-              height={200}
-              className="mx-auto mb-8 w-1/2 h-1/2 object-contain"
-            />
-
-            <div className="w-24 h-1 bg-gradient-to-r from-red-500 to-orange-500 mx-auto rounded-full mb-8"></div>
-
-            <p className="text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-12">
-              {isExpired 
-                ? `Registration deadline has passed. Thank you for your interest in ${eventLabel}!`
-                : 'Registration is closing soon. Don\'t miss your chance to participate!'
-              }
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">Club Player Registration</h1>
+            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+              {isOpen
+                ? `Register your club's players and team managers for ${eventLabel}.`
+                : `Registration for ${eventLabel} is closed. Clubs can still log in to view their registered players.`}
             </p>
 
-            {/* Countdown Timer or Expired Message */}
-            {isExpired ? (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8 max-w-2xl mx-auto">
-                <div className="text-6xl mb-4">⏰</div>
-                <h2 className="text-2xl font-bold text-red-300 mb-2">Registration Closed</h2>
-                <p className="text-gray-300">The registration deadline has expired. We look forward to seeing you at the next Olympiad!</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 text-left">
+              {STEPS.map((s, i) => (
+                <div key={s.title} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-2xl">{s.icon}</span>
+                    <span className="text-xs font-bold text-orange-400">STEP {i + 1}</span>
+                  </div>
+                  <h3 className="text-white font-semibold">{s.title}</h3>
+                  <p className="text-gray-400 text-sm mt-1">{s.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-14 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Select Your Club</h2>
+                <p className="text-gray-400 mt-1">Click your club to log in.</p>
               </div>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search club..."
+                className="w-full sm:w-72 px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="h-44 rounded-2xl bg-white/5 animate-pulse" />
+                ))}
+              </div>
+            ) : visibleClubs.length === 0 ? (
+              <p className="text-center text-gray-400 py-16">No clubs found.</p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-2xl mx-auto mb-12">
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20">
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-red-400 mb-2">
-                    {timeLeft.days}
-                  </div>
-                  <div className="text-white text-sm font-medium">Days</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20">
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-orange-400 mb-2">
-                    {timeLeft.hours}
-                  </div>
-                  <div className="text-white text-sm font-medium">Hours</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20">
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-400 mb-2">
-                    {timeLeft.minutes}
-                  </div>
-                  <div className="text-white text-sm font-medium">Minutes</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20">
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-green-400 mb-2">
-                    {timeLeft.seconds}
-                  </div>
-                  <div className="text-white text-sm font-medium">Seconds</div>
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {visibleClubs.map((club) => (
+                  <button
+                    key={club.id}
+                    onClick={() => setSelected({ name: club.name, slug: club.slug, logo: club.logo })}
+                    className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-400/60 rounded-2xl p-5 flex flex-col items-center text-center transition-all hover:-translate-y-1"
+                  >
+                    <div className="w-20 h-20 rounded-xl bg-white p-2 mb-3">
+                      <Image src={club.logo} alt={club.name} width={80} height={80} className="w-full h-full object-contain" />
+                    </div>
+                    <span className="text-white text-sm font-semibold leading-tight">{club.name}</span>
+                    <span className="mt-3 text-xs text-orange-400 opacity-80 group-hover:opacity-100">Login →</span>
+                  </button>
+                ))}
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/club"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-neutral-900 transition-all duration-300 transform hover:scale-105"
-              >
-                View Participating Clubs
-              </Link>
-              <Link
-                href="/fixtures"
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-orange-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
-              >
-                View Fixtures
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Information Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-neutral-900">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">
-                What&apos;s next?
-              </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-pink-500 mx-auto rounded-full mb-6"></div>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                While registration is closed, you can still stay updated with all the exciting events
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Fixtures Card */}
-              <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:border-orange-400/50 transition-all duration-300 group">
-                <div className="text-4xl mb-4">📅</div>
-                <h3 className="text-xl font-bold text-white mb-4">View Fixtures</h3>
-                <p className="text-gray-300 mb-6">
-                  Check out the complete schedule of matches across all sports categories
-                </p>
-                <Link
-                  href="/fixtures"
-                  className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors"
-                >
-                  View Fixtures
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-
-              {/* Clubs Card */}
-              <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:border-orange-400/50 transition-all duration-300 group">
-                <div className="text-4xl mb-4">🏆</div>
-                <h3 className="text-xl font-bold text-white mb-4">Participating Clubs</h3>
-                <p className="text-gray-300 mb-6">
-                  Discover all the clubs participating in {eventLabel}
-                </p>
-                <Link
-                  href="/club"
-                  className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors"
-                >
-                  View Clubs
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-
-              {/* Media Card */}
-              <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:border-orange-400/50 transition-all duration-300 group">
-                <div className="text-4xl mb-4">📸</div>
-                <h3 className="text-xl font-bold text-white mb-4">Photo Gallery</h3>
-                <p className="text-gray-300 mb-6">
-                  Browse photos and videos from the exciting competitions
-                </p>
-                <Link
-                  href="/photo-gallery"
-                  className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors"
-                >
-                  View Gallery
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-neutral-800 to-neutral-900">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-6 tracking-tight">
-              Need More Information?
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              For any questions about {eventLabel}, feel free to contact us
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact-us"
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-orange-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
-              >
-                Contact Us
-              </Link>
-              <Link
-                href="/"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-neutral-900 transition-all duration-300 transform hover:scale-105"
-              >
-                Back to Home
+            <div className="mt-14 text-center text-gray-400 text-sm">
+              Need help or your club&apos;s login?{' '}
+              <Link href="/contact-us" className="text-orange-400 hover:text-orange-300 font-medium">
+                Contact the organisers
               </Link>
             </div>
           </div>
         </section>
       </main>
+
+      {selected && (
+        <ClubLoginModal
+          club={selected}
+          onClose={() => setSelected(null)}
+          onSuccess={() => router.push(`/registration/${selected.slug}`)}
+        />
+      )}
     </div>
   );
 };
