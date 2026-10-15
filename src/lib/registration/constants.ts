@@ -20,8 +20,22 @@ export const ROLE_OPTIONS: { value: PlayerRole; label: string }[] = [
   { value: 'team_manager', label: 'Team Manager' },
 ];
 
-export const TSHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
+export const TSHIRT_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 export type TshirtSize = (typeof TSHIRT_SIZES)[number];
+
+export const TSHIRT_CHART_IMAGE = '/images/t-shirt-size.jpg';
+
+/** Polo T-shirt, Asian size chart (inches), matches the chart image. */
+export const TSHIRT_MEASUREMENTS: Record<TshirtSize, { label: string; chest: number; length: number }> = {
+  S: { label: 'S', chest: 19, length: 27 },
+  M: { label: 'M', chest: 20, length: 28 },
+  L: { label: 'L', chest: 21, length: 29 },
+  XL: { label: 'XL', chest: 22, length: 30 },
+  XXL: { label: '2XL', chest: 23, length: 31 },
+  XXXL: { label: '3XL', chest: 24, length: 32 },
+};
+
+export const sizeLabel = (size: string) => TSHIRT_MEASUREMENTS[size as TshirtSize]?.label ?? size;
 
 export const MAX_PHOTO_BYTES = 500 * 1024;
 export const MAX_PHOTO_LABEL = '500 KB';

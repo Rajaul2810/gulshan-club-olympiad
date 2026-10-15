@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import Image from 'next/image';
 import {
   DECLARATION_POINTS,
   EMPTY_PLAYER,
@@ -9,6 +10,8 @@ import {
   MAX_PHOTO_LABEL,
   MEMBER_TYPE_OPTIONS,
   ROLE_OPTIONS,
+  TSHIRT_CHART_IMAGE,
+  TSHIRT_MEASUREMENTS,
   TSHIRT_SIZES,
   checkGameCapacity,
   countGameEntries,
@@ -57,12 +60,17 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
   const [saving, setSaving] = useState(false);
   const [compressing, setCompressing] = useState(false);
   const [gameSearch, setGameSearch] = useState('');
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !saving && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (showSizeChart) setShowSizeChart(false);
+      else if (!saving) onClose();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, saving]);
+  }, [onClose, saving, showSizeChart]);
 
   useEffect(() => {
     if (!photo) return;
@@ -246,12 +254,26 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                   />
                 </Field>
                 <Field label="T-shirt Size" required error={errors.tshirt_size}>
-                  <select className={`${inputClass} ${border('tshirt_size')}`} value={form.tshirt_size} onChange={(e) => set('tshirt_size', e.target.value as PlayerInput['tshirt_size'])}>
-                    <option className="bg-neutral-900" value="">Select size</option>
-                    {TSHIRT_SIZES.map((s) => (
-                      <option className="bg-neutral-900" key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
+                  <div className="flex gap-2">
+                    <select className={`${inputClass} ${border('tshirt_size')}`} value={form.tshirt_size} onChange={(e) => set('tshirt_size', e.target.value as PlayerInput['tshirt_size'])}>
+                      <option className="bg-neutral-900" value="">Select size</option>
+                      {TSHIRT_SIZES.map((s) => {
+                        const m = TSHIRT_MEASUREMENTS[s];
+                        return (
+                          <option className="bg-neutral-900" key={s} value={s}>
+                            {m.label} — Chest {m.chest}″, Length {m.length}″
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowSizeChart(true)}
+                      className="shrink-0 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-orange-300 text-xs font-medium"
+                    >
+                      Size chart
+                    </button>
+                  </div>
                 </Field>
               </div>
             </div>
@@ -345,6 +367,45 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
           </div>
         </div>
       </form>
+
+      {showSizeChart && (
+        <div className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4" onClick={() => setShowSizeChart(false)}>
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setShowSizeChart(false)}
+              className="absolute -top-10 right-0 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm"
+            >
+              Close ✕
+            </button>
+            <Image
+              src={TSHIRT_CHART_IMAGE}
+              alt="Polo T-shirt Asian size chart"
+              width={1024}
+              height={474}
+              className="w-full h-auto rounded-2xl shadow-2xl"
+            />
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              {TSHIRT_SIZES.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    set('tshirt_size', s);
+                    setShowSizeChart(false);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold ${
+                    form.tshirt_size === s ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+                >
+                  {TSHIRT_MEASUREMENTS[s].label}
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-gray-400 text-xs mt-2">Tap a size to select it</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

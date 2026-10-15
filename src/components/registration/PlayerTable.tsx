@@ -6,6 +6,7 @@ import {
   ROLE_OPTIONS,
   ageOn,
   labelOf,
+  sizeLabel,
   type Player,
 } from '@/lib/registration/constants';
 
@@ -77,7 +78,7 @@ export default function PlayerTable({ players, showClub, canEdit, onEdit, onDele
               </td>
               <td className="px-4 py-3 text-gray-300 whitespace-nowrap">
                 {p.account_no}
-                <div className="text-gray-500 text-xs">Size {p.tshirt_size}</div>
+                <div className="text-gray-500 text-xs">Size {sizeLabel(p.tshirt_size)}</div>
               </td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1 max-w-sm">

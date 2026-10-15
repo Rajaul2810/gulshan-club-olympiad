@@ -7,6 +7,7 @@ import {
   ageOn,
   countGameEntries,
   labelOf,
+  sizeLabel,
   teamStatus,
   type Player,
 } from './constants';
@@ -75,7 +76,7 @@ function clubList(players: Player[]): Report {
       head,
       body: list
         .sort(byName)
-        .map((p, i) => [i + 1, p.name, p.phone, gender(p), type(p), role(p), p.account_no, p.tshirt_size, p.games.join(', ')]),
+        .map((p, i) => [i + 1, p.name, p.phone, gender(p), type(p), role(p), p.account_no, sizeLabel(p.tshirt_size), p.games.join(', ')]),
     })),
   };
 }
@@ -179,7 +180,7 @@ function uniquePlayers(players: Player[]): Report {
             p.birthday,
             ageOn(p.birthday) ?? '-',
             p.account_no,
-            p.tshirt_size,
+            sizeLabel(p.tshirt_size),
             p.games.join(', '),
             p.games.length,
           ]),
@@ -201,7 +202,7 @@ function tshirtSummary(players: Player[]): Report {
     sections: [
       {
         title: 'T-shirt Sizes',
-        head: ['Club', ...TSHIRT_SIZES, 'Total'],
+        head: ['Club', ...TSHIRT_SIZES.map(sizeLabel), 'Total'],
         body: rows,
         foot: ['TOTAL', ...TSHIRT_SIZES.map((_, i) => rows.reduce((n, r) => n + (r[i + 1] as number), 0)), players.length],
       },
