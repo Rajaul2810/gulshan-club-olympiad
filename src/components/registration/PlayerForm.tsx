@@ -10,7 +10,9 @@ import {
   MEMBER_TYPE_OPTIONS,
   ROLE_OPTIONS,
   TSHIRT_SIZES,
-  gamesForGender,
+  checkGameCapacity,
+  countGameEntries,
+  gamesForPlayer,
   validatePlayer,
   type Player,
   type PlayerInput,
@@ -22,6 +24,8 @@ interface PlayerFormProps {
   player?: Player | null;
   /** POST url for new players; `${url}/${id}` is used with PUT when editing. */
   endpoint: string;
+  /** All players of this club, used to show filled places per game */
+  clubPlayers: Player[];
   onSaved: (player: Player) => void;
   onClose: () => void;
 }
@@ -43,7 +47,7 @@ function Field({ label, error, required, children }: { label: string; error?: st
   );
 }
 
-export default function PlayerForm({ clubName, player, endpoint, onSaved, onClose }: PlayerFormProps) {
+export default function PlayerForm({ clubName, player, endpoint, clubPlayers, onSaved, onClose }: PlayerFormProps) {
   const isEdit = Boolean(player);
   const [form, setForm] = useState<PlayerInput>(player ? playerToInput(player) : EMPTY_PLAYER);
   const [photo, setPhoto] = useState<File | null>(null);
@@ -67,14 +71,16 @@ export default function PlayerForm({ clubName, player, endpoint, onSaved, onClos
     return () => URL.revokeObjectURL(url);
   }, [photo]);
 
-  const availableGames = useMemo(() => gamesForGender(form.gender), [form.gender]);
+  const availableGames = useMemo(() => gamesForPlayer(form.gender, form.member_type), [form.gender, form.member_type]);
   const visibleGames = availableGames.filter((g) => g.name.toLowerCase().includes(gameSearch.toLowerCase()));
+  const counts = useMemo(() => countGameEntries(clubPlayers, player?.id), [clubPlayers, player?.id]);
+  const isFull = (name: string) => checkGameCapacity([name], form.role, form.member_type, counts).length > 0;
 
   const set = <K extends keyof PlayerInput>(key: K, value: PlayerInput[K]) => {
     setForm((f) => {
       const next = { ...f, [key]: value };
-      if (key === 'gender') {
-        const allowed = new Set(gamesForGender(value as PlayerInput['gender']).map((g) => g.name));
+      if (key === 'gender' || key === 'member_type') {
+        const allowed = new Set(gamesForPlayer(next.gender, next.member_type).map((g) => g.name));
         next.games = f.games.filter((g) => allowed.has(g));
       }
       return next;
@@ -110,7 +116,9 @@ export default function PlayerForm({ clubName, player, endpoint, onSaved, onClos
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const found = validatePlayer(form);
+    const found: Errors = validatePlayer(form);
+    const capacity = checkGameCapacity(form.games, form.role, form.member_type, counts);
+    if (!found.games && capacity.length > 0) found.games = capacity.join('. ');
     if (Object.keys(found).length > 0) {
       setErrors({ ...found, form: 'Please fix the highlighted fields' });
       return;
@@ -229,8 +237,13 @@ export default function PlayerForm({ clubName, player, endpoint, onSaved, onClos
                     ))}
                   </select>
                 </Field>
-                <Field label="Club A/C No." required error={errors.account_no}>
-                  <input className={`${inputClass} ${border('account_no')}`} value={form.account_no} onChange={(e) => set('account_no', e.target.value)} placeholder="Membership account no." />
+                <Field label={form.member_type === 'child' ? "Parent's Member A/C No." : 'Member A/C No.'} required error={errors.account_no}>
+                  <input
+                    className={`${inputClass} ${border('account_no')}`}
+                    value={form.account_no}
+                    onChange={(e) => set('account_no', e.target.value)}
+                    placeholder={form.member_type === 'member' ? 'Membership account no.' : "Member's account no."}
+                  />
                 </Field>
                 <Field label="T-shirt Size" required error={errors.tshirt_size}>
                   <select className={`${inputClass} ${border('tshirt_size')}`} value={form.tshirt_size} onChange={(e) => set('tshirt_size', e.target.value as PlayerInput['tshirt_size'])}>
@@ -253,6 +266,7 @@ export default function PlayerForm({ clubName, player, endpoint, onSaved, onClos
                 </h3>
                 <p className="text-gray-400 text-xs mt-1">
                   {form.gender ? 'Select every game this person will play.' : 'Select gender first to see the matching games.'}{' '}
+                  {form.member_type === 'child' && 'Only games that allow children are shown. '}
                   <span className="text-white font-medium">{form.games.length} selected</span>
                 </p>
               </div>
@@ -261,16 +275,31 @@ export default function PlayerForm({ clubName, player, endpoint, onSaved, onClos
             <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-3 rounded-2xl border ${errors.games ? 'border-red-500/70' : 'border-white/10'} bg-white/[0.03]`}>
               {visibleGames.map((g) => {
                 const checked = form.games.includes(g.name);
+                const full = !checked && isFull(g.name);
+                const c = counts[g.name] ?? { players: 0, children: 0 };
                 return (
                   <label
                     key={g.name}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer border text-sm transition-colors ${
-                      checked ? 'bg-orange-500/20 border-orange-500/60 text-white' : 'bg-white/5 border-transparent text-gray-300 hover:bg-white/10'
+                    title={full ? 'No places left for your club' : undefined}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl border text-sm transition-colors ${
+                      full
+                        ? 'bg-white/[0.02] border-transparent text-gray-600 cursor-not-allowed'
+                        : checked
+                          ? 'bg-orange-500/20 border-orange-500/60 text-white cursor-pointer'
+                          : 'bg-white/5 border-transparent text-gray-300 hover:bg-white/10 cursor-pointer'
                     }`}
                   >
-                    <input type="checkbox" className="accent-orange-500 w-4 h-4" checked={checked} onChange={() => toggleGame(g.name)} />
+                    <input type="checkbox" className="accent-orange-500 w-4 h-4" checked={checked} disabled={full} onChange={() => toggleGame(g.name)} />
                     <span className="text-lg leading-none">{g.icon}</span>
-                    <span className="leading-tight">{g.name}</span>
+                    <span className="flex-1 leading-tight">
+                      {g.name}
+                      <span className={`block text-[11px] ${full ? 'text-red-400/70' : 'text-gray-500'}`}>
+                        {full ? 'Full · ' : ''}
+                        {c.players}/{g.max} players
+                        {g.maxChildren > 0 ? ` · ${c.children}/${g.maxChildren} children` : ' · no children'}
+                        {g.min > 0 ? ` · min ${g.min}` : ''}
+                      </span>
+                    </span>
                   </label>
                 );
               })}

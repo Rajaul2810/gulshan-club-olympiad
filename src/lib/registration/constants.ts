@@ -1,7 +1,7 @@
-import { sportsCategories } from '@/data/sports';
+import { GAME_LIMITS, sportsCategories, type GameLimit } from '@/data/sports';
 
 export type Gender = 'male' | 'female';
-export type MemberType = 'member' | 'spouse';
+export type MemberType = 'member' | 'spouse' | 'child';
 export type PlayerRole = 'player' | 'team_manager';
 
 export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
@@ -12,6 +12,7 @@ export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
 export const MEMBER_TYPE_OPTIONS: { value: MemberType; label: string }[] = [
   { value: 'member', label: 'Member' },
   { value: 'spouse', label: 'Spouse' },
+  { value: 'child', label: 'Child' },
 ];
 
 export const ROLE_OPTIONS: { value: PlayerRole; label: string }[] = [
@@ -28,29 +29,87 @@ export const PHOTO_BUCKET = 'player-photos';
 
 export const DECLARATION_POINTS = [
   'All information provided above is true and correct to the best of my knowledge.',
-  'I am a bona fide member (or spouse of a member) of the club I am registering under, and I am not registered under any other club in this Olympiad.',
+  'I am a bona fide member (or the spouse or child of a member) of the club I am registering under, and I am not registered under any other club in this Olympiad.',
+  'For a child participant, the parent/guardian member gives consent and takes responsibility for the child.',
   'I am physically and medically fit to take part, and I participate at my own risk.',
   'I will abide by the rules, regulations and decisions of the organising committee and referees.',
   'I consent to photos and videos taken during the event being used for Olympiad publicity.',
 ];
 
+const NO_LIMIT: GameLimit = { min: 0, max: Infinity, maxChildren: Infinity };
+
 export const GAMES = sportsCategories.map((s) => ({
   name: s.name,
   icon: s.icon,
   gender: s.gender,
+  ...(GAME_LIMITS[s.name] ?? NO_LIMIT),
 }));
+
+export type Game = (typeof GAMES)[number];
 
 export const GAME_NAMES = GAMES.map((g) => g.name);
 
-/** Men-only / women-only games are hidden for the other gender; mixed events stay open. */
-export function gamesForGender(gender: Gender | '') {
-  if (!gender) return GAMES;
-  return GAMES.filter((g) => {
-    if (/mix/i.test(g.name)) return true;
-    if (g.gender === 'Men') return gender === 'male';
-    if (g.gender === 'Women') return gender === 'female';
-    return true;
-  });
+export const gameByName = (name: string) => GAMES.find((g) => g.name === name);
+
+function genderAllowed(g: Game, gender: Gender | '') {
+  if (!gender || /mix/i.test(g.name)) return true;
+  if (g.gender === 'Men') return gender === 'male';
+  if (g.gender === 'Women') return gender === 'female';
+  return true;
+}
+
+/** Games a person can pick: men/women-only games follow gender; children only see games that allow children. */
+export function gamesForPlayer(gender: Gender | '', memberType: MemberType | '') {
+  return GAMES.filter((g) => genderAllowed(g, gender) && (memberType !== 'child' || g.maxChildren > 0));
+}
+
+export interface GameCount {
+  players: number;
+  children: number;
+}
+
+/** Per-game counts of a club's players (team managers excluded). Pass excludeId when editing. */
+export function countGameEntries(players: Player[], excludeId?: string) {
+  const counts: Record<string, GameCount> = {};
+  for (const p of players) {
+    if (p.id === excludeId || p.role !== 'player') continue;
+    for (const g of p.games) {
+      counts[g] ??= { players: 0, children: 0 };
+      counts[g].players++;
+      if (p.member_type === 'child') counts[g].children++;
+    }
+  }
+  return counts;
+}
+
+/** Returns one message per game that would go over its limit; empty array means OK. */
+export function checkGameCapacity(
+  games: string[],
+  role: PlayerRole | '',
+  memberType: MemberType | '',
+  counts: Record<string, GameCount>
+) {
+  if (role !== 'player') return [];
+  const problems: string[] = [];
+  for (const name of games) {
+    const g = gameByName(name);
+    if (!g) continue;
+    const c = counts[name] ?? { players: 0, children: 0 };
+    if (memberType === 'child' && g.maxChildren === 0) problems.push(`Children cannot play ${name}`);
+    else if (c.players >= g.max) problems.push(`${name} is full (${c.players}/${g.max})`);
+    else if (memberType === 'child' && c.children >= g.maxChildren) {
+      problems.push(`${name}: child limit reached (${c.children}/${g.maxChildren})`);
+    }
+  }
+  return problems;
+}
+
+export type TeamStatus = 'short' | 'ok' | 'full';
+
+export function teamStatus(g: Game, c: GameCount): TeamStatus {
+  if (c.players < g.min) return 'short';
+  if (c.players >= g.max) return 'full';
+  return 'ok';
 }
 
 export function labelOf<T extends string>(options: { value: T; label: string }[], value: T) {
@@ -140,6 +199,10 @@ export function validatePlayer(input: PlayerInput) {
   if (!TSHIRT_SIZES.includes(input.tshirt_size as TshirtSize)) errors.tshirt_size = 'Select T-shirt size';
   if (input.games.length === 0) errors.games = 'Select at least one game';
   else if (input.games.some((g) => !GAME_NAMES.includes(g))) errors.games = 'Unknown game selected';
+  else if (input.member_type === 'child') {
+    const blocked = input.games.filter((g) => gameByName(g)?.maxChildren === 0);
+    if (blocked.length) errors.games = `Children cannot play: ${blocked.join(', ')}`;
+  }
   if (!input.declaration_accepted) errors.declaration_accepted = 'You must accept the declaration';
   return errors;
 }

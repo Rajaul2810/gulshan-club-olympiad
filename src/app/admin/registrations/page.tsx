@@ -156,7 +156,7 @@ export default function AdminRegistrationsPage() {
   const downloadAll = () =>
     run(() =>
       exportExcel(
-        (['club-summary', 'game-summary', 'tshirt', 'unique'] as ReportKey[]).map(reportFor),
+        (['club-summary', 'game-summary', 'eligibility', 'tshirt', 'unique'] as ReportKey[]).map(reportFor),
         meta,
         'Registration_Summary'
       )
@@ -301,6 +301,7 @@ export default function AdminRegistrationsPage() {
           clubName={editing.club?.name ?? ''}
           player={editing}
           endpoint="/api/admin/registrations"
+          clubPlayers={players.filter((p) => p.club_id === editing.club_id)}
           onSaved={onSaved}
           onClose={() => setEditing(null)}
         />

@@ -2,9 +2,12 @@ import {
   GENDER_OPTIONS,
   MEMBER_TYPE_OPTIONS,
   ROLE_OPTIONS,
+  GAMES,
   TSHIRT_SIZES,
   ageOn,
+  countGameEntries,
   labelOf,
+  teamStatus,
   type Player,
 } from './constants';
 
@@ -27,13 +30,14 @@ export interface Report {
   sheetPerSection?: boolean;
 }
 
-export type ReportKey = 'club-list' | 'club-summary' | 'game-list' | 'game-summary' | 'unique' | 'tshirt';
+export type ReportKey = 'club-list' | 'club-summary' | 'game-list' | 'game-summary' | 'eligibility' | 'unique' | 'tshirt';
 
 export const REPORTS: { key: ReportKey; label: string }[] = [
   { key: 'club-summary', label: 'Club-wise Count' },
   { key: 'club-list', label: 'Club-wise Participants' },
   { key: 'game-summary', label: 'Game-wise Count' },
   { key: 'game-list', label: 'Game-wise Participants' },
+  { key: 'eligibility', label: 'Team Eligibility' },
   { key: 'unique', label: 'Unique Players' },
   { key: 'tshirt', label: 'T-shirt Sizes' },
 ];
@@ -84,6 +88,7 @@ function clubSummary(players: Player[]): Report {
     count(list, (p) => p.gender === 'female'),
     count(list, (p) => p.member_type === 'member'),
     count(list, (p) => p.member_type === 'spouse'),
+    count(list, (p) => p.member_type === 'child'),
     count(list, (p) => p.role === 'player'),
     count(list, (p) => p.role === 'team_manager'),
     list.reduce((n, p) => n + p.games.length, 0),
@@ -93,12 +98,13 @@ function clubSummary(players: Player[]): Report {
     key: 'club-summary',
     title: 'Club-wise Participant Count',
     description: 'Totals per club. Game entries count one row per player per game.',
+    landscape: true,
     sections: [
       {
         title: 'Club-wise Count',
-        head: ['Club', 'Players', 'Male', 'Female', 'Members', 'Spouses', 'Player Role', 'Team Managers', 'Game Entries'],
+        head: ['Club', 'Players', 'Male', 'Female', 'Members', 'Spouses', 'Children', 'Player Role', 'Team Managers', 'Game Entries'],
         body: rows,
-        foot: ['TOTAL', ...[1, 2, 3, 4, 5, 6, 7, 8].map(total)],
+        foot: ['TOTAL', ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map(total)],
       },
     ],
   };
@@ -203,7 +209,46 @@ function tshirtSummary(players: Player[]): Report {
   };
 }
 
+const STATUS_LABEL = { short: 'Below minimum', ok: 'OK', full: 'Full' } as const;
+
+function eligibility(players: Player[]): Report {
+  const body: Cell[][] = [];
+  for (const [club, list] of groupBy(players, clubName)) {
+    const counts = countGameEntries(list);
+    for (const g of GAMES) {
+      const c = counts[g.name];
+      if (!c) continue;
+      const status = teamStatus(g, c);
+      body.push([
+        club,
+        g.name,
+        c.players,
+        c.children,
+        g.min,
+        g.max,
+        g.maxChildren,
+        status === 'short' ? `${STATUS_LABEL.short} (needs ${g.min - c.players})` : STATUS_LABEL[status],
+      ]);
+    }
+  }
+  const short = body.filter((r) => String(r[7]).startsWith(STATUS_LABEL.short)).length;
+  return {
+    key: 'eligibility',
+    title: 'Team Eligibility',
+    description: 'Each club team vs the minimum/maximum player rules (team managers not counted).',
+    landscape: true,
+    sections: [
+      {
+        title: `Team Eligibility (${short} below minimum)`,
+        head: ['Club', 'Game', 'Players', 'Children', 'Min', 'Max', 'Max Children', 'Status'],
+        body,
+      },
+    ],
+  };
+}
+
 const BUILDERS: Record<ReportKey, (players: Player[]) => Report> = {
+  eligibility,
   'club-list': clubList,
   'club-summary': clubSummary,
   'game-list': gameList,

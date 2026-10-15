@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { api, ApiError } from '@/lib/registration/client';
 import { GAMES, type Player } from '@/lib/registration/constants';
+import TeamStatusCard from '@/components/registration/TeamStatusCard';
 import { buildReport, exportExcel, exportPdf } from '@/lib/registration/reports';
 import ClubLoginModal from '@/components/registration/ClubLoginModal';
 import PlayerForm from '@/components/registration/PlayerForm';
@@ -195,6 +196,8 @@ export default function ClubRegistrationPage() {
           ))}
         </div>
 
+        <TeamStatusCard players={players} onSelectGame={setGameFilter} />
+
         <div className="flex flex-col lg:flex-row gap-3 lg:items-center">
           <input
             value={search}
@@ -246,6 +249,7 @@ export default function ClubRegistrationPage() {
           clubName={club.name}
           player={editing}
           endpoint="/api/registration/players"
+          clubPlayers={players}
           onSaved={onSaved}
           onClose={() => setEditing(undefined)}
         />
