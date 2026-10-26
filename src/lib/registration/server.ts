@@ -218,6 +218,7 @@ export async function savePlayer({ event, club, form, playerId }: SaveOptions): 
     birthday: input.birthday,
     role: input.role,
     account_no: input.account_no.trim(),
+    bgf_id: (input.bgf_id ?? '').trim() || null,
     tshirt_size: input.tshirt_size,
     photo_url: photoUrl,
     declaration_accepted: true,

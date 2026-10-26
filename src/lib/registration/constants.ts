@@ -155,10 +155,16 @@ export interface PlayerInput {
   birthday: string;
   role: PlayerRole | '';
   account_no: string;
+  bgf_id: string;
   tshirt_size: TshirtSize | '';
   games: string[];
   declaration_accepted: boolean;
 }
+
+export const isGolfGame = (name: string) => /^golf/i.test(name);
+
+/** BGF (Bangladesh Golf Federation) ID is required only when a Golf event is selected. */
+export const needsBgfId = (games: string[]) => games.some(isGolfGame);
 
 export interface Player {
   id: string;
@@ -172,6 +178,7 @@ export interface Player {
   birthday: string;
   role: PlayerRole;
   account_no: string;
+  bgf_id: string | null;
   tshirt_size: TshirtSize;
   photo_url: string | null;
   declaration_accepted: boolean;
@@ -190,6 +197,7 @@ export const EMPTY_PLAYER: PlayerInput = {
   birthday: '',
   role: '',
   account_no: '',
+  bgf_id: '',
   tshirt_size: '',
   games: [],
   declaration_accepted: false,
@@ -210,6 +218,7 @@ export function validatePlayer(input: PlayerInput) {
   else if (new Date(input.birthday) > new Date()) errors.birthday = 'Birthday cannot be in the future';
   if (!ROLE_OPTIONS.some((o) => o.value === input.role)) errors.role = 'Select role';
   if (!input.account_no.trim()) errors.account_no = 'A/C number is required';
+  if (needsBgfId(input.games) && !(input.bgf_id ?? '').trim()) errors.bgf_id = 'BGF ID is required for Golf events';
   if (!TSHIRT_SIZES.includes(input.tshirt_size as TshirtSize)) errors.tshirt_size = 'Select T-shirt size';
   if (input.games.length === 0) errors.games = 'Select at least one game';
   else if (input.games.some((g) => !GAME_NAMES.includes(g))) errors.games = 'Unknown game selected';

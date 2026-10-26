@@ -6,6 +6,7 @@ import {
   TSHIRT_SIZES,
   ageOn,
   countGameEntries,
+  isGolfGame,
   labelOf,
   sizeLabel,
   teamStatus,
@@ -118,13 +119,19 @@ function gameList(players: Player[]): Report {
     title: 'Game-wise Participant List',
     description: 'Every game with its registered players.',
     sheetPerSection: true,
-    sections: groupBy(players, (p) => p.games).map(([game, list]) => ({
-      title: `${game} (${list.length})`,
-      head,
-      body: list
-        .sort((a, b) => clubName(a).localeCompare(clubName(b)) || byName(a, b))
-        .map((p, i) => [i + 1, p.name, clubName(p), gender(p), role(p), p.phone, ageOn(p.birthday) ?? '-']),
-    })),
+    sections: groupBy(players, (p) => p.games).map(([game, list]) => {
+      const golf = isGolfGame(game);
+      return {
+        title: `${game} (${list.length})`,
+        head: golf ? [...head, 'BGF ID'] : head,
+        body: list
+          .sort((a, b) => clubName(a).localeCompare(clubName(b)) || byName(a, b))
+          .map((p, i) => {
+            const row: Cell[] = [i + 1, p.name, clubName(p), gender(p), role(p), p.phone, ageOn(p.birthday) ?? '-'];
+            return golf ? [...row, p.bgf_id ?? ''] : row;
+          }),
+      };
+    }),
   };
 }
 
@@ -165,7 +172,7 @@ function uniquePlayers(players: Player[]): Report {
     sections: [
       {
         title: `Unique Players (${players.length})`,
-        head: ['#', 'Name', 'Club', 'Phone', 'Email', 'Gender', 'Type', 'Role', 'Birthday', 'Age', 'A/C No', 'T-shirt', 'Games', 'No. of Games'],
+        head: ['#', 'Name', 'Club', 'Phone', 'Email', 'Gender', 'Type', 'Role', 'Birthday', 'Age', 'A/C No', 'BGF ID', 'T-shirt', 'Games', 'No. of Games'],
         body: [...players]
           .sort((a, b) => clubName(a).localeCompare(clubName(b)) || byName(a, b))
           .map((p, i) => [
@@ -180,6 +187,7 @@ function uniquePlayers(players: Player[]): Report {
             p.birthday,
             ageOn(p.birthday) ?? '-',
             p.account_no,
+            p.bgf_id ?? '',
             sizeLabel(p.tshirt_size),
             p.games.join(', '),
             p.games.length,

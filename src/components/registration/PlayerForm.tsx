@@ -16,6 +16,7 @@ import {
   checkGameCapacity,
   countGameEntries,
   gamesForPlayer,
+  needsBgfId,
   validatePlayer,
   type Player,
   type PlayerInput,
@@ -38,14 +39,26 @@ type Errors = Partial<Record<keyof PlayerInput | 'photo' | 'form', string>>;
 const inputClass =
   'w-full px-4 py-2.5 bg-white/10 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors';
 
-function Field({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: ReactNode }) {
+function Field({
+  label,
+  error,
+  required,
+  hint,
+  children,
+}: {
+  label: string;
+  error?: string;
+  required?: boolean;
+  hint?: string;
+  children: ReactNode;
+}) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-200 mb-1.5">
         {label} {required ? <span className="text-orange-400">*</span> : <span className="text-gray-500 text-xs">(optional)</span>}
       </label>
       {children}
-      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+      {error ? <p className="text-red-400 text-xs mt-1">{error}</p> : hint && <p className="text-gray-500 text-xs mt-1">{hint}</p>}
     </div>
   );
 }
@@ -83,6 +96,13 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
   const visibleGames = availableGames.filter((g) => g.name.toLowerCase().includes(gameSearch.toLowerCase()));
   const counts = useMemo(() => countGameEntries(clubPlayers, player?.id), [clubPlayers, player?.id]);
   const isFull = (name: string) => checkGameCapacity([name], form.role, form.member_type, counts).length > 0;
+  const golfSelected = needsBgfId(form.games);
+
+  const focusBgf = () => {
+    const el = document.getElementById('bgf_id');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el?.focus({ preventScroll: true });
+  };
 
   const set = <K extends keyof PlayerInput>(key: K, value: PlayerInput[K]) => {
     setForm((f) => {
@@ -253,6 +273,20 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                     placeholder={form.member_type === 'member' ? 'Membership account no.' : "Member's account no."}
                   />
                 </Field>
+                <Field
+                  label="BGF ID"
+                  required={golfSelected}
+                  error={errors.bgf_id}
+                  hint={golfSelected ? 'Required because a Golf event is selected' : 'Bangladesh Golf Federation ID — required only for Golf'}
+                >
+                  <input
+                    id="bgf_id"
+                    className={`${inputClass} ${errors.bgf_id ? 'border-red-500/70' : golfSelected && !form.bgf_id.trim() ? 'border-orange-400/70' : 'border-white/20'}`}
+                    value={form.bgf_id}
+                    onChange={(e) => set('bgf_id', e.target.value)}
+                    placeholder={golfSelected ? 'Enter BGF ID' : 'Only if playing Golf'}
+                  />
+                </Field>
                 <Field label="T-shirt Size" required error={errors.tshirt_size}>
                   <div className="flex gap-2">
                     <select className={`${inputClass} ${border('tshirt_size')}`} value={form.tshirt_size} onChange={(e) => set('tshirt_size', e.target.value as PlayerInput['tshirt_size'])}>
@@ -328,6 +362,14 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
               {visibleGames.length === 0 && <p className="text-gray-500 text-sm p-2">No games match your search.</p>}
             </div>
             {errors.games && <p className="text-red-400 text-xs mt-1">{errors.games}</p>}
+            {golfSelected && !form.bgf_id.trim() && (
+              <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 rounded-xl border border-orange-400/50 bg-orange-500/10 text-sm text-orange-100">
+                <span>⛳ Golf selected — a <b>BGF ID</b> is required for this player.</span>
+                <button type="button" onClick={focusBgf} className="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-orange-500/30 hover:bg-orange-500/50 text-white text-xs font-medium">
+                  Enter BGF ID
+                </button>
+              </div>
+            )}
           </section>
 
           {/* Declaration */}

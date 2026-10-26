@@ -79,6 +79,7 @@ export default function PlayerTable({ players, showClub, canEdit, onEdit, onDele
               <td className="px-4 py-3 text-gray-300 whitespace-nowrap">
                 {p.account_no}
                 <div className="text-gray-500 text-xs">Size {sizeLabel(p.tshirt_size)}</div>
+                {p.bgf_id && <div className="text-green-300/80 text-xs">BGF {p.bgf_id}</div>}
               </td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1 max-w-sm">

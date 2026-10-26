@@ -84,6 +84,7 @@ export function playerToInput(p: Player): PlayerInput {
     birthday: p.birthday,
     role: p.role,
     account_no: p.account_no,
+    bgf_id: p.bgf_id ?? '',
     tshirt_size: p.tshirt_size,
     games: p.games,
     declaration_accepted: true,

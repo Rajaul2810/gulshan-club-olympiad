@@ -108,7 +108,7 @@ export default function AdminRegistrationsPage() {
         (!gameFilter || p.games.includes(gameFilter)) &&
         (!genderFilter || p.gender === genderFilter) &&
         (!roleFilter || p.role === roleFilter) &&
-        (!q || p.name.toLowerCase().includes(q) || p.phone.includes(q) || p.account_no.toLowerCase().includes(q))
+        (!q || p.name.toLowerCase().includes(q) || p.phone.includes(q) || p.account_no.toLowerCase().includes(q) || (p.bgf_id ?? '').toLowerCase().includes(q))
     );
   }, [players, clubFilter, gameFilter, genderFilter, roleFilter, search]);
 

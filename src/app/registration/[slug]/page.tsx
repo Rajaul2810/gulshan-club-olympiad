@@ -81,7 +81,7 @@ export default function ClubRegistrationPage() {
     return players.filter(
       (p) =>
         (!gameFilter || p.games.includes(gameFilter)) &&
-        (!q || p.name.toLowerCase().includes(q) || p.phone.includes(q) || p.account_no.toLowerCase().includes(q))
+        (!q || p.name.toLowerCase().includes(q) || p.phone.includes(q) || p.account_no.toLowerCase().includes(q) || (p.bgf_id ?? '').toLowerCase().includes(q))
     );
   }, [players, search, gameFilter]);
 
