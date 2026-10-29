@@ -3,10 +3,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: [
-      'localhost',
-      'klvmwalefgmoxteoawet.supabase.co',  // Your Supabase project domain
-      'img.youtube.com',                    // YouTube thumbnails
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'klvmwalefgmoxteoawet.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
     ],
   },
 };
