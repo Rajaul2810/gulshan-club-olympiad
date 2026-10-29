@@ -67,8 +67,8 @@ export const gameByName = (name: string) => GAMES.find((g) => g.name === name);
 
 function genderAllowed(g: Game, gender: Gender | '') {
   if (!gender || /mix/i.test(g.name)) return true;
-  if (g.gender === 'Men') return gender === 'male';
-  if (g.gender === 'Women') return gender === 'female';
+  if (g.gender === 'Male') return gender === 'male';
+  if (g.gender === 'Female') return gender === 'female';
   return true;
 }
 
@@ -80,7 +80,11 @@ export function gamesForPlayer(gender: Gender | '', memberType: MemberType | '')
 export interface GameCount {
   players: number;
   children: number;
+  male: number;
+  female: number;
 }
+
+const EMPTY_COUNT: GameCount = { players: 0, children: 0, male: 0, female: 0 };
 
 /** Per-game counts of a club's players (team managers excluded). Pass excludeId when editing. */
 export function countGameEntries(players: Player[], excludeId?: string) {
@@ -88,9 +92,11 @@ export function countGameEntries(players: Player[], excludeId?: string) {
   for (const p of players) {
     if (p.id === excludeId || p.role !== 'player') continue;
     for (const g of p.games) {
-      counts[g] ??= { players: 0, children: 0 };
+      counts[g] ??= { ...EMPTY_COUNT };
       counts[g].players++;
       if (p.member_type === 'child') counts[g].children++;
+      if (p.gender === 'male') counts[g].male++;
+      if (p.gender === 'female') counts[g].female++;
     }
   }
   return counts;
@@ -101,6 +107,7 @@ export function checkGameCapacity(
   games: string[],
   role: PlayerRole | '',
   memberType: MemberType | '',
+  gender: Gender | '',
   counts: Record<string, GameCount>
 ) {
   if (role !== 'player') return [];
@@ -108,20 +115,36 @@ export function checkGameCapacity(
   for (const name of games) {
     const g = gameByName(name);
     if (!g) continue;
-    const c = counts[name] ?? { players: 0, children: 0 };
+    const c = counts[name] ?? EMPTY_COUNT;
     if (memberType === 'child' && g.maxChildren === 0) problems.push(`Children cannot play ${name}`);
     else if (c.players >= g.max) problems.push(`${name} is full (${c.players}/${g.max})`);
-    else if (memberType === 'child' && c.children >= g.maxChildren) {
+    else if (gender === 'male' && g.maxMale !== undefined && c.male >= g.maxMale) {
+      problems.push(`${name}: male places full (${c.male}/${g.maxMale})`);
+    } else if (gender === 'female' && g.maxFemale !== undefined && c.female >= g.maxFemale) {
+      problems.push(`${name}: female places full (${c.female}/${g.maxFemale})`);
+    } else if (memberType === 'child' && c.children >= g.maxChildren) {
       problems.push(`${name}: child limit reached (${c.children}/${g.maxChildren})`);
     }
   }
   return problems;
 }
 
+/** What a club still needs to reach the minimum, e.g. "1 more male"; empty when the minimum is met. */
+export function shortfall(g: Game, c: GameCount): string[] {
+  const needs: string[] = [];
+  const male = Math.max(0, (g.minMale ?? 0) - c.male);
+  const female = Math.max(0, (g.minFemale ?? 0) - c.female);
+  if (male) needs.push(`${male} more male`);
+  if (female) needs.push(`${female} more female`);
+  const other = g.min - c.players - male - female;
+  if (other > 0) needs.push(`${other} more`);
+  return needs;
+}
+
 export type TeamStatus = 'short' | 'ok' | 'full';
 
 export function teamStatus(g: Game, c: GameCount): TeamStatus {
-  if (c.players < g.min) return 'short';
+  if (shortfall(g, c).length > 0) return 'short';
   if (c.players >= g.max) return 'full';
   return 'ok';
 }

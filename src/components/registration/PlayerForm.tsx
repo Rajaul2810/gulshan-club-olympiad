@@ -95,7 +95,7 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
   const availableGames = useMemo(() => gamesForPlayer(form.gender, form.member_type), [form.gender, form.member_type]);
   const visibleGames = availableGames.filter((g) => g.name.toLowerCase().includes(gameSearch.toLowerCase()));
   const counts = useMemo(() => countGameEntries(clubPlayers, player?.id), [clubPlayers, player?.id]);
-  const isFull = (name: string) => checkGameCapacity([name], form.role, form.member_type, counts).length > 0;
+  const isFull = (name: string) => checkGameCapacity([name], form.role, form.member_type, form.gender, counts).length > 0;
   const golfSelected = needsBgfId(form.games);
 
   const focusBgf = () => {
@@ -145,7 +145,7 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const found: Errors = validatePlayer(form);
-    const capacity = checkGameCapacity(form.games, form.role, form.member_type, counts);
+    const capacity = checkGameCapacity(form.games, form.role, form.member_type, form.gender, counts);
     if (!found.games && capacity.length > 0) found.games = capacity.join('. ');
     if (Object.keys(found).length > 0) {
       setErrors({ ...found, form: 'Please fix the highlighted fields' });
@@ -332,7 +332,7 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
               {visibleGames.map((g) => {
                 const checked = form.games.includes(g.name);
                 const full = !checked && isFull(g.name);
-                const c = counts[g.name] ?? { players: 0, children: 0 };
+                const c = counts[g.name] ?? { players: 0, children: 0, male: 0, female: 0 };
                 return (
                   <label
                     key={g.name}
@@ -354,6 +354,8 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                         {c.players}/{g.max} players
                         {g.maxChildren > 0 ? ` · ${c.children}/${g.maxChildren} children` : ' · no children'}
                         {g.min > 0 ? ` · min ${g.min}` : ''}
+                        {g.maxMale !== undefined ? ` · ${c.male}/${g.maxMale} male` : ''}
+                        {g.maxFemale !== undefined ? ` · ${c.female}/${g.maxFemale} female` : ''}
                       </span>
                     </span>
                   </label>

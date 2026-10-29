@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
 
-const sora = Sora({
+// Self-hosted so builds don't depend on reaching Google Fonts
+const sora = localFont({
+  src: "./fonts/sora-latin.woff2",
   variable: "--font-sora",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "100 800",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

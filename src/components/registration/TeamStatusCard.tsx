@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { GAMES, countGameEntries, teamStatus, type Player, type TeamStatus } from '@/lib/registration/constants';
+import { GAMES, countGameEntries, shortfall, teamStatus, type Player, type TeamStatus } from '@/lib/registration/constants';
 
-const STYLE: Record<TeamStatus, { chip: string; label: (need: number) => string }> = {
-  short: { chip: 'bg-red-500/15 border-red-500/40 text-red-200', label: (need) => `needs ${need} more` },
+const STYLE: Record<TeamStatus, { chip: string; label: (needs: string[]) => string }> = {
+  short: { chip: 'bg-red-500/15 border-red-500/40 text-red-200', label: (needs) => `needs ${needs.join(', ')}` },
   ok: { chip: 'bg-green-500/15 border-green-500/40 text-green-200', label: () => 'OK' },
   full: { chip: 'bg-amber-500/15 border-amber-500/40 text-amber-200', label: () => 'full' },
 };
@@ -46,7 +46,7 @@ export default function TeamStatusCard({ players, onSelectGame }: { players: Pla
               <span className="truncate">
                 {game.icon} {game.name}
               </span>
-              <span className="text-xs font-semibold whitespace-nowrap">{STYLE[status].label(game.min - count.players)}</span>
+              <span className="text-xs font-semibold whitespace-nowrap">{STYLE[status].label(shortfall(game, count))}</span>
             </div>
             <div className="text-[11px] opacity-75 mt-0.5">
               {count.players}/{game.max} players{game.min > 0 ? ` (min ${game.min})` : ''}

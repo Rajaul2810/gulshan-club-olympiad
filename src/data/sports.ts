@@ -1,93 +1,46 @@
+const ARM_WRESTLING_MALE = ['65-70kg', '70-75kg', '75-80kg', '80-85kg', '85-90kg', 'Over 90kg'].map(
+  (w) => `Arm Wrestling ${w} Male`
+);
+const ARM_WRESTLING_FEMALE = ['55-65kg', '65-75kg', 'Over 75kg'].map((w) => `Arm Wrestling ${w} Female`);
+
+const POWER_LIFTS = ['Squat', 'Bench Press', 'Dead Lift'];
+const POWER_CLASSES = ['55-70kg', '71-85kg', '86-96kg', 'Over 96kg'];
+const POWER_LIFTING = POWER_LIFTS.flatMap((lift) => POWER_CLASSES.map((w) => `Power Lifting ${lift} ${w}`));
+
 export const sportsCategories = [
-  {
-    name: "Arm Wrestling 55-60 KG Women",
+  ...ARM_WRESTLING_FEMALE.map((name) => ({
+    name,
     icon: "💪",
     color: "from-pink-400 to-rose-500",
-    gender: "Women",
+    gender: "Female",
     genderColor: "bg-pink-500",
-  },
-  {
-    name: "Arm Wrestling 60-65kg Women",
-    icon: "💪",
-    color: "from-pink-400 to-rose-500",
-    gender: "Women",
-    genderColor: "bg-pink-500",
-  },
-  {
-    name: "Arm Wrestling 65-70kg Men",
+  })),
+  ...ARM_WRESTLING_MALE.map((name) => ({
+    name,
     icon: "💪",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
-  },
-  {
-    name: "Arm Wrestling 65-75kg Women",
-    icon: "💪",
-    color: "from-pink-400 to-rose-500",
-    gender: "Women",
-    genderColor: "bg-pink-500",
-  },
-  {
-    name: "Arm Wrestling 70-75kg Men",
-    icon: "💪",
-    color: "from-blue-400 to-cyan-500",
-    gender: "Men",
-    genderColor: "bg-blue-500",
-  },
-  {
-    name: "Arm Wrestling 75-80 kg Women",
-    icon: "💪",
-    color: "from-pink-400 to-rose-500",
-    gender: "Women",
-    genderColor: "bg-pink-500",
-  },
-  {
-    name: "Arm Wrestling 75-80kg Men",
-    icon: "💪",
-    color: "from-blue-400 to-cyan-500",
-    gender: "Men",
-    genderColor: "bg-blue-500",
-  },
-  {
-    name: "Arm Wrestling 80-85kg Men",
-    icon: "💪",
-    color: "from-blue-400 to-cyan-500",
-    gender: "Men",
-    genderColor: "bg-blue-500",
-  },
-  {
-    name: "Arm Wrestling 85-90kg Men",
-    icon: "💪",
-    color: "from-blue-400 to-cyan-500",
-    gender: "Men",
-    genderColor: "bg-blue-500",
-  },
+  })),
   {
     name: "Badminton Team Event (Men's)",
     icon: "🏸",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   {
     name: "Badminton Women's & Mixed Doubles",
     icon: "🏸",
     color: "from-pink-400 to-rose-500",
-    gender: "Women",
+    gender: "Female",
     genderColor: "bg-pink-500",
-  },
-  {
-    name: "Basketball Men's",
-    icon: "🏀",
-    color: "from-blue-400 to-cyan-500",
-    gender: "Men",
-    genderColor: "bg-blue-500",
   },
   {
     name: "Basketball Women's",
     icon: "🏀",
     color: "from-pink-400 to-rose-500",
-    gender: "Women",
+    gender: "Female",
     genderColor: "bg-pink-500",
   },
   {
@@ -115,7 +68,7 @@ export const sportsCategories = [
     name: "Football Men (7 a Side)",
     icon: "⚽",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   {
@@ -136,7 +89,7 @@ export const sportsCategories = [
     name: "Padel Men's",
     icon: "🎾",
     color: "from-yellow-400 to-orange-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-yellow-500",
   },
   {
@@ -178,21 +131,21 @@ export const sportsCategories = [
     name: "Swimming Men (21 –40 yrs.)",
     icon: "🏊",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   {
     name: "Swimming Men (41 – 60 yrs.)",
     icon: "🏊",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   {
     name: "Swimming Men (Open)",
     icon: "🏊",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   // {
@@ -213,7 +166,7 @@ export const sportsCategories = [
     name: "Tennis Men's Team",
     icon: "🎾",
     color: "from-blue-400 to-cyan-500",
-    gender: "Men",
+    gender: "Male",
     genderColor: "bg-blue-500",
   },
   {
@@ -223,20 +176,13 @@ export const sportsCategories = [
     gender: "Mixed",
     genderColor: "bg-green-500",
   },
-  {
-    name: "Weight Lifting Regular",
+  ...POWER_LIFTING.map((name) => ({
+    name,
     icon: "🏋️",
     color: "from-gray-500 to-slate-600",
     gender: "Mixed",
     genderColor: "bg-gray-500",
-  },
-  {
-    name: "Weight Lifting Squat",
-    icon: "🏋️",
-    color: "from-slate-500 to-gray-600",
-    gender: "Mixed",
-    genderColor: "bg-slate-500",
-  },
+  })),
 ];
 
 export interface GameLimit {
@@ -246,32 +192,32 @@ export interface GameLimit {
   max: number;
   /** How many of the max may be children (0 = children not allowed) */
   maxChildren: number;
+  /** Optional per-gender limits, e.g. mixed doubles needing 2 male + 2 female */
+  minMale?: number;
+  maxMale?: number;
+  minFemale?: number;
+  maxFemale?: number;
 }
+
+const ARM_WRESTLING_LIMIT: GameLimit = { min: 1, max: 2, maxChildren: 0 };
+const POWER_LIFTING_LIMIT: GameLimit = { min: 1, max: 3, maxChildren: 0 };
 
 // Per-club limits from the official event list. Team managers are not counted.
 export const GAME_LIMITS: Record<string, GameLimit> = {
-  "Arm Wrestling 55-60 KG Women": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 60-65kg Women": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 65-75kg Women": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 75-80 kg Women": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 65-70kg Men": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 70-75kg Men": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 75-80kg Men": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 80-85kg Men": { min: 1, max: 2, maxChildren: 0 },
-  "Arm Wrestling 85-90kg Men": { min: 1, max: 2, maxChildren: 0 },
-  "Basketball Men's": { min: 5, max: 8, maxChildren: 2 },
+  ...Object.fromEntries([...ARM_WRESTLING_MALE, ...ARM_WRESTLING_FEMALE].map((n) => [n, ARM_WRESTLING_LIMIT])),
+  ...Object.fromEntries(POWER_LIFTING.map((n) => [n, POWER_LIFTING_LIMIT])),
   "Basketball Women's": { min: 5, max: 12, maxChildren: 2 },
-  "Badminton Team Event (Men's)": { min: 5, max: 6, maxChildren: 1 },
+  "Badminton Team Event (Men's)": { min: 6, max: 7, maxChildren: 1 },
   "Badminton Women's & Mixed Doubles": { min: 5, max: 6, maxChildren: 1 },
   "Billiards Team Event": { min: 2, max: 3, maxChildren: 0 },
   "Cricket (T-10)": { min: 11, max: 15, maxChildren: 2 },
   "Chess": { min: 1, max: 2, maxChildren: 1 },
   "Football Men (7 a Side)": { min: 7, max: 11, maxChildren: 3 },
-  "Golf Team Event Regular": { min: 0, max: 2, maxChildren: 0 },
-  "Golf Team Event Seniors": { min: 0, max: 2, maxChildren: 0 },
+  "Golf Team Event Regular": { min: 2, max: 3, maxChildren: 0 },
+  "Golf Team Event Seniors": { min: 2, max: 3, maxChildren: 0 },
   "Pool Team Event": { min: 2, max: 3, maxChildren: 0 },
-  "Padel Men's": { min: 5, max: 6, maxChildren: 1 },
-  "Padel Womens & Mix": { min: 5, max: 6, maxChildren: 1 },
+  "Padel Men's": { min: 6, max: 7, maxChildren: 1 },
+  "Padel Womens & Mix": { min: 6, max: 7, maxChildren: 1 },
   "Quiz Team Event": { min: 4, max: 6, maxChildren: 0 },
   "Snooker": { min: 3, max: 4, maxChildren: 0 },
   "Squash": { min: 3, max: 4, maxChildren: 0 },
@@ -279,10 +225,8 @@ export const GAME_LIMITS: Record<string, GameLimit> = {
   "Swimming Men (41 – 60 yrs.)": { min: 1, max: 2, maxChildren: 1 },
   "Swimming Men (Open)": { min: 1, max: 2, maxChildren: 1 },
   "Tennis Men's Team": { min: 5, max: 6, maxChildren: 0 },
-  "Tennis Women's & Mixed Doubles": { min: 2, max: 3, maxChildren: 0 },
+  "Tennis Women's & Mixed Doubles": { min: 4, max: 5, maxChildren: 0, minMale: 2, maxMale: 2, minFemale: 2, maxFemale: 3 },
   "Table Tennis Team Event": { min: 3, max: 4, maxChildren: 1 },
-  "Weight Lifting Regular": { min: 1, max: 3, maxChildren: 0 },
-  "Weight Lifting Squat": { min: 1, max: 3, maxChildren: 0 },
 };
 
 // Helper function to convert sport name to URL slug

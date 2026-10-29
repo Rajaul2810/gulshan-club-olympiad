@@ -1,30 +1,68 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFixtures } from "@/hooks/useFixtures";
 import { useEvent } from "@/contexts/EventContext";
 // import { useClubs } from "@/hooks/useClubs";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import SportsCategorySection from "@/components/SportsCategory";
+import { sportsCategories } from "@/data/sports";
 import Image from "next/image";
 import Link from "next/link";
+
+type SortKey = "newest" | "oldest" | "sport";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+  { value: "sport", label: "Sport (A–Z)" },
+];
+
+const SPORT_ORDER = new Map(sportsCategories.map((s, i) => [s.name, i]));
+const sportIcon = (name: string) => sportsCategories.find((s) => s.name === name)?.icon ?? "🏆";
 
 const FixturesPage = () => {
   const router = useRouter();
   const { eventLabel } = useEvent();
   const { fixtures, loading } = useFixtures();
-  // const { clubs } = useClubs();
+  const [sport, setSport] = useState("");
+  const [sort, setSort] = useState<SortKey>("newest");
 
-  //Get all fixtures (no status filtering needed for images)
+  useEffect(() => {
+    setSport(new URLSearchParams(window.location.search).get("sport") ?? "");
+  }, []);
+
+  const selectSport = (value: string) => {
+    setSport(value);
+    const url = value ? `/fixtures?sport=${encodeURIComponent(value)}` : "/fixtures";
+    window.history.replaceState(null, "", url);
+  };
+
+  // Only sports that actually have fixtures, in the official event order
+  const sportOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    fixtures.forEach((f) => counts.set(f.sport, (counts.get(f.sport) ?? 0) + 1));
+    if (sport && !counts.has(sport)) counts.set(sport, 0);
+    return [...counts.entries()]
+      .map(([name, count]) => ({ name, count }))
+      .sort(
+        (a, b) =>
+          (SPORT_ORDER.get(a.name) ?? Infinity) - (SPORT_ORDER.get(b.name) ?? Infinity) ||
+          a.name.localeCompare(b.name)
+      );
+  }, [fixtures, sport]);
+
   const upcomingFixtures = useMemo(() => {
-    return fixtures.sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
-  }, [fixtures]);
-
-  console.log(upcomingFixtures);
+    const time = (d: string) => new Date(d).getTime();
+    return fixtures
+      .filter((f) => !sport || f.sport === sport)
+      .sort((a, b) => {
+        if (sort === "oldest") return time(a.created_at) - time(b.created_at);
+        if (sort === "sport") return a.sport.localeCompare(b.sport) || time(b.created_at) - time(a.created_at);
+        return time(b.created_at) - time(a.created_at);
+      });
+  }, [fixtures, sport, sort]);
 
   //Helper to get team name (not needed for fixture images)
   // const getTeamName = (teamId: string) => {
@@ -95,6 +133,61 @@ const FixturesPage = () => {
           </div>
         )}
 
+        {/* Category filter */}
+        {!loading && fixtures.length > 0 && (
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3 mb-8 p-4 rounded-2xl bg-white/5 border border-white/10">
+            <label className="flex-1">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-orange-400 mb-1.5">Category</span>
+              <select
+                value={sport}
+                onChange={(e) => selectSport(e.target.value)}
+                className="w-full bg-neutral-800 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500"
+              >
+                <option value="">All categories ({fixtures.length})</option>
+                {sportOptions.map((o) => (
+                  <option key={o.name} value={o.name}>
+                    {sportIcon(o.name)} {o.name} ({o.count})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="sm:w-48">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-orange-400 mb-1.5">Sort by</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                className="w-full bg-neutral-800 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {sport && (
+              <button
+                onClick={() => selectSport("")}
+                className="px-4 py-3 rounded-xl border border-white/20 text-gray-300 hover:bg-white/10 text-sm"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        )}
+
+        {!loading && fixtures.length > 0 && (
+          <p className="text-gray-400 text-sm mb-4">
+            Showing <span className="text-white font-medium">{upcomingFixtures.length}</span>{" "}
+            {upcomingFixtures.length === 1 ? "fixture" : "fixtures"}
+            {sport && (
+              <>
+                {" "}for <span className="text-orange-300">{sport}</span>
+              </>
+            )}
+          </p>
+        )}
+
         {/* Fixtures Grid */}
         {!loading && upcomingFixtures.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3  gap-6">
@@ -163,11 +256,16 @@ const FixturesPage = () => {
         {!loading && upcomingFixtures.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 text-lg mb-4">
-              No fixtures available
+              {sport ? `No fixtures for ${sport} yet` : "No fixtures available"}
             </div>
             <p className="text-gray-500 text-sm">
               Check back later for upcoming matches
             </p>
+            {sport && (
+              <button onClick={() => selectSport("")} className="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">
+                Show all categories
+              </button>
+            )}
           </div>
         )}
       </main>

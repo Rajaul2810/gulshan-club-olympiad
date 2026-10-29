@@ -6,6 +6,7 @@ import {
   TSHIRT_SIZES,
   ageOn,
   countGameEntries,
+  shortfall,
   isGolfGame,
   labelOf,
   sizeLabel,
@@ -236,7 +237,7 @@ function eligibility(players: Player[]): Report {
         g.min,
         g.max,
         g.maxChildren,
-        status === 'short' ? `${STATUS_LABEL.short} (needs ${g.min - c.players})` : STATUS_LABEL[status],
+        status === 'short' ? `${STATUS_LABEL.short} (needs ${shortfall(g, c).join(', ')})` : STATUS_LABEL[status],
       ]);
     }
   }

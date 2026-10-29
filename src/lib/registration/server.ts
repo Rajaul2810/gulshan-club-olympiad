@@ -173,7 +173,7 @@ async function assertPhoneAvailable(eventId: string, clubId: string, phone: stri
 /** Enforces per-club max players and max children for each selected game. */
 async function assertGameCapacity(eventId: string, clubId: string, input: PlayerInput, playerId?: string) {
   const clubPlayers = await listPlayers(eventId, clubId);
-  const problems = checkGameCapacity(input.games, input.role, input.member_type, countGameEntries(clubPlayers, playerId));
+  const problems = checkGameCapacity(input.games, input.role, input.member_type, input.gender, countGameEntries(clubPlayers, playerId));
   if (problems.length > 0) {
     const message = problems.join('. ');
     throw new RegistrationError(message, 409, { games: message });
