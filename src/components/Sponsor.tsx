@@ -84,9 +84,7 @@ const SponsorSection = () => {
           </p>
         </div>
 
-        <div className="text-center mb-16">
-          <Image src={venue} alt="Venue Partner" width={200} height={200} className="w-100 h-100 object-contain mx-auto" />
-        </div>
+
 
         {/* Sponsors, one row per tier */}
         <div className="space-y-12 lg:space-y-14">
@@ -97,6 +95,10 @@ const SponsorSection = () => {
               ))}
             </div>
           ))}
+        </div>
+
+        <div className="text-center my-16">
+          <Image src={venue} alt="Venue Partner" width={200} height={200} className="w-75 h-75 object-contain mx-auto" />
         </div>
 
         {/* Additional Partners Section */}

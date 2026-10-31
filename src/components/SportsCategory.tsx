@@ -63,7 +63,7 @@ const SportsCategorySection = () => {
 
                     {/* View Details Indicator */}
                     <div className="mt-3 text-xs text-gray-400 group-hover:text-orange-400 transition-colors duration-300 font-bold border border-orange-400 rounded-md px-2 py-1">
-                      View Results →
+                      Fixtures & Results →
                     </div>
                   </div>
                 </Link>
