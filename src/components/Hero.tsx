@@ -100,7 +100,7 @@ const Hero = () => {
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-3xl sm:text-4xl font-extrabold text-violet-500 mb-1 drop-shadow">
-                    24
+                    22
                   </div>
                   <div className="text-white text-sm font-medium">
                     Participant Clubs
@@ -108,7 +108,7 @@ const Hero = () => {
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-3xl sm:text-4xl font-extrabold text-pink-400 mb-1 drop-shadow">
-                    1215
+                    1222
                   </div>
                   <div className="text-white text-sm font-medium">
                     Participants

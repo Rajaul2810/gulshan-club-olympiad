@@ -89,7 +89,7 @@ const SportsCategorySection = () => {
                 <div className="w-px h-12 bg-white/20"></div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-400 mb-1">
-                    24
+                    22
                   </div>
                   <div className="text-white text-sm">Clubs</div>
                 </div>
