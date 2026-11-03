@@ -4,13 +4,15 @@ import { useState, FormEvent } from 'react';
 import Image from 'next/image';
 import { login } from '@/lib/auth/adminAuth';
 import { useEvent } from '@/contexts/EventContext';
+import { logosForYear } from '@/data/branding';
 
 interface LoginModalProps {
   onSuccess: () => void;
 }
 
 export function LoginModal({ onSuccess }: LoginModalProps) {
-  const { eventLabel } = useEvent();
+  const { eventLabel, year } = useEvent();
+  const logo = logosForYear(year);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,11 +40,12 @@ export function LoginModal({ onSuccess }: LoginModalProps) {
         <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-8 rounded-t-3xl text-center">
           <div className="mb-4 flex justify-center">
             <Image
-              src="/images/Olympiad2025Logo-01.png"
+              key={logo.badge}
+              src={logo.badge}
               alt={eventLabel}
-              width={80}
-              height={80}
-              className="object-contain"
+              width={logo.hasBackground ? 136 : 80}
+              height={logo.hasBackground ? 96 : 80}
+              className={`object-contain ${logo.hasBackground ? "rounded-xl shadow-lg" : ""}`}
             />
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Admin Login</h2>

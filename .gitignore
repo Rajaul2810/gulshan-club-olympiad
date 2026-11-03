@@ -38,6 +38,7 @@ yarn-error.log*
 
 # pdf.js worker, copied from node_modules on install
 /public/pdfjs/
+/docs/*.docx
 
 # typescript
 *.tsbuildinfo

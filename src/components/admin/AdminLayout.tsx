@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useEvent } from '@/contexts/EventContext';
 import YearSwitcher from '@/components/YearSwitcher';
+import { logosForYear } from '@/data/branding';
 import { LoginModal } from './LoginModal';
 
 interface AdminLayoutProps {
@@ -18,7 +19,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, email, loading, logout, refreshAuth } = useAuth();
-  const { eventLabel } = useEvent();
+  const { eventLabel, year } = useEvent();
+  const logo = logosForYear(year);
 
   const menuItems = [
     {
@@ -164,11 +166,12 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               {/* Logo */}
               <Link href="/admin" className="flex items-center gap-3">
                 <Image
-                  src="/images/Olympiad2025Logo-01.png"
+                  key={logo.badge}
+                  src={logo.badge}
                   alt={eventLabel}
-                  width={40}
+                  width={logo.hasBackground ? 57 : 40}
                   height={40}
-                  className="object-contain"
+                  className={`object-contain ${logo.hasBackground ? "h-10 w-auto rounded-md" : ""}`}
                 />
                 <div className="hidden sm:block">
                   <h1 className="text-white font-bold text-lg">Admin Panel</h1>

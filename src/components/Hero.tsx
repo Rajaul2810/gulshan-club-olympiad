@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useEvent } from "@/contexts/EventContext";
+import { logosForYear } from "@/data/branding";
 
 const sportsShapes = [
   {
@@ -26,7 +27,8 @@ const sportsShapes = [
 
 const Hero = () => {
   const router = useRouter();
-  const { eventLabel } = useEvent();
+  const { eventLabel, year } = useEvent();
+  const logo = logosForYear(year);
   return (
     <div className="relative min-h-screen bg-neutral-950 overflow-hidden flex items-center">
       {/* Modern Sports Vibe Background */}
@@ -71,11 +73,13 @@ const Hero = () => {
               {/* Main Heading */}
               <div className="mb-4 animate-slide-up">
                 <Image
-                  src="/images/heroLogo-01.png"
+                  key={logo.hero}
+                  src={logo.hero}
                   alt={`Gulshan Club ${eventLabel}`}
                   width={400}
-                  height={200}
-                  className=" mx-auto object-contain drop-shadow-2xl"
+                  height={logo.hasBackground ? 282 : 200}
+                  priority
+                  className={`mx-auto object-contain drop-shadow-2xl ${logo.hasBackground ? "rounded-2xl mb-6 ring-1 ring-yellow-500/20" : ""}`}
                 />
                 <blockquote className="mt-0 text-base sm:text-lg text-gray-200 mx-auto lg:mx-0">
                   &quot;Sports do not build character. They reveal it. Through

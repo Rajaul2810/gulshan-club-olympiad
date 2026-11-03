@@ -8,6 +8,7 @@ import { useEvent } from "@/contexts/EventContext";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import SportsCategorySection from "@/components/SportsCategory";
 import { sportsCategories } from "@/data/sports";
+import { logosForYear } from "@/data/branding";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -24,7 +25,8 @@ const sportIcon = (name: string) => sportsCategories.find((s) => s.name === name
 
 const FixturesPage = () => {
   const router = useRouter();
-  const { eventLabel } = useEvent();
+  const { eventLabel, year } = useEvent();
+  const logo = logosForYear(year);
   const { fixtures, loading } = useFixtures();
   const [sport, setSport] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -92,11 +94,12 @@ const FixturesPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Image
-                src="/images/heroLogo-01.png"
+                key={logo.hero}
+                src={logo.hero}
                 alt={`Gulshan Club ${eventLabel}`}
-                width={60}
+                width={logo.hasBackground ? 85 : 60}
                 height={60}
-                className="object-contain"
+                className={`object-contain ${logo.hasBackground ? "h-14 w-auto rounded-lg" : ""}`}
               />
               <h1 className="text-2xl sm:text-3xl font-bold text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500">

@@ -5,12 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { useClubs } from "@/hooks/useClubs";
 import YearSwitcher from "@/components/YearSwitcher";
+import { useEvent } from "@/contexts/EventContext";
+import { logosForYear } from "@/data/branding";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { clubs, loading } = useClubs();
+  const { year, eventLabel } = useEvent();
+  const logo = logosForYear(year);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -53,11 +57,12 @@ const Navbar = () => {
             </Link>
             <Link href="/" className="flex  space-x-2">
               <Image
-                src="/images/Olympiad2025Logo-01.png"
-                alt="Gulshan Club Logo"
-                width={80}
+                key={logo.badge}
+                src={logo.badge}
+                alt={`Gulshan Club ${eventLabel}`}
+                width={logo.hasBackground ? 112 : 80}
                 height={80}
-                className="w-16 h-16 object-contain"
+                className={logo.hasBackground ? "h-14 w-auto rounded-lg object-contain" : "w-16 h-16 object-contain"}
               />
             </Link>
             {/* <Link href="/" className="flex  space-x-2 ml-2">
