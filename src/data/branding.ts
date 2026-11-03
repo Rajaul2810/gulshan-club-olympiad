@@ -1,22 +1,22 @@
 export interface YearLogos {
   /** Large logo on the home hero and page headers */
   hero: string;
-  /** Small square-ish logo in the navbar, admin sidebar and login */
+  /** Hero logos with a solid background get rounded corners so they sit nicely on the dark UI */
+  heroHasBackground: boolean;
+  /** Square transparent logo in the navbar, admin sidebar and login */
   badge: string;
-  /** Logos with a solid background get rounded corners so they sit nicely on the dark UI */
-  hasBackground: boolean;
 }
 
 export const LOGOS_BY_YEAR: Record<number, YearLogos> = {
   2026: {
     hero: '/images/logo_2026_emblem.jpeg',
-    badge: '/images/logo_2026_emblem.jpeg',
-    hasBackground: true,
+    heroHasBackground: true,
+    badge: '/images/OlympiadLogo2026.png',
   },
   2025: {
     hero: '/images/heroLogo-01.png',
+    heroHasBackground: false,
     badge: '/images/Olympiad2025Logo-01.png',
-    hasBackground: false,
   },
 };
 

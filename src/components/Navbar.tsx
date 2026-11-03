@@ -60,9 +60,9 @@ const Navbar = () => {
                 key={logo.badge}
                 src={logo.badge}
                 alt={`Gulshan Club ${eventLabel}`}
-                width={logo.hasBackground ? 112 : 80}
+                width={80}
                 height={80}
-                className={logo.hasBackground ? "h-14 w-auto rounded-lg object-contain" : "w-16 h-16 object-contain"}
+                className="w-16 h-16 object-contain"
               />
             </Link>
             {/* <Link href="/" className="flex  space-x-2 ml-2">

@@ -77,9 +77,9 @@ const Hero = () => {
                   src={logo.hero}
                   alt={`Gulshan Club ${eventLabel}`}
                   width={400}
-                  height={logo.hasBackground ? 282 : 200}
+                  height={logo.heroHasBackground ? 282 : 200}
                   priority
-                  className={`mx-auto object-contain drop-shadow-2xl ${logo.hasBackground ? "rounded-2xl mb-6 ring-1 ring-yellow-500/20" : ""}`}
+                  className={`mx-auto object-contain drop-shadow-2xl ${logo.heroHasBackground ? "rounded-2xl mb-6 " : ""}`}
                 />
                 <blockquote className="mt-0 text-base sm:text-lg text-gray-200 mx-auto lg:mx-0">
                   &quot;Sports do not build character. They reveal it. Through

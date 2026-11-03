@@ -43,9 +43,9 @@ export function LoginModal({ onSuccess }: LoginModalProps) {
               key={logo.badge}
               src={logo.badge}
               alt={eventLabel}
-              width={logo.hasBackground ? 136 : 80}
-              height={logo.hasBackground ? 96 : 80}
-              className={`object-contain ${logo.hasBackground ? "rounded-xl shadow-lg" : ""}`}
+              width={80}
+              height={80}
+              className="object-contain"
             />
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Admin Login</h2>

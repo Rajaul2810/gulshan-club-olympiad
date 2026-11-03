@@ -97,9 +97,9 @@ const FixturesPage = () => {
                 key={logo.hero}
                 src={logo.hero}
                 alt={`Gulshan Club ${eventLabel}`}
-                width={logo.hasBackground ? 85 : 60}
+                width={logo.heroHasBackground ? 85 : 60}
                 height={60}
-                className={`object-contain ${logo.hasBackground ? "h-14 w-auto rounded-lg" : ""}`}
+                className={`object-contain ${logo.heroHasBackground ? "h-14 w-auto rounded-lg" : ""}`}
               />
               <h1 className="text-2xl sm:text-3xl font-bold text-white">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500">

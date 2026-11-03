@@ -169,9 +169,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   key={logo.badge}
                   src={logo.badge}
                   alt={eventLabel}
-                  width={logo.hasBackground ? 57 : 40}
+                  width={40}
                   height={40}
-                  className={`object-contain ${logo.hasBackground ? "h-10 w-auto rounded-md" : ""}`}
+                  className="object-contain"
                 />
                 <div className="hidden sm:block">
                   <h1 className="text-white font-bold text-lg">Admin Panel</h1>
