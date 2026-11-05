@@ -149,7 +149,9 @@ const Footer = () => {
               <ContactRow icon="M17.66 16.66L13.41 20.9a2 2 0 01-2.83 0l-4.24-4.24a8 8 0 1111.32 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z">
                 Gulshan Club Limited
                 <br />
-                House 12, Road 86, Gulshan 2, Dhaka 1212
+                House: NWJ-2/A, Bir Uttom Sultan Mahmud Road (Old Road: 50)
+                <br />
+                Gulshan 2, Dhaka 1212, Bangladesh.
               </ContactRow>
             </ul>
           </div>

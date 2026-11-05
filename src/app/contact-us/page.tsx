@@ -232,10 +232,10 @@ const ContactUsPage = () => {
                   Send us an email and we&apos;ll respond within 24 hours
                 </p>
                 <a
-                  href="mailto:info@gulshanclub.com"
+                  href="mailto:olympiad@gulshanclub.com"
                   className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
                 >
-                  info@gulshanclub.com
+                  olympiad@gulshanclub.com
                 </a>
               </div>
 
@@ -247,10 +247,10 @@ const ContactUsPage = () => {
                   Speak with our team directly during business hours
                 </p>
                 <a
-                  href="tel:+8801234567890"
+                  href="tel:16717"
                   className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
                 >
-                  +880 1234 567 890
+                  16717
                 </a>
               </div>
 
@@ -262,7 +262,7 @@ const ContactUsPage = () => {
                   Come visit our club for more information
                 </p>
                 <p className="text-orange-400 font-semibold">
-                  Gulshan Club, Dhaka
+                  Gulshan Club, Dhaka, Bangladesh
                 </p>
               </div>
             </div>
