@@ -23,6 +23,13 @@ export const sportsCategories = [
     genderColor: "bg-blue-500",
   })),
   {
+    name: "Auction Bridge",
+    icon: "🃏",
+    color: "from-red-400 to-rose-600",
+    gender: "Mixed",
+    genderColor: "bg-red-500",
+  },
+  {
     name: "Badminton Team Event (Men's)",
     icon: "🏸",
     color: "from-blue-400 to-cyan-500",
@@ -84,6 +91,13 @@ export const sportsCategories = [
     color: "from-amber-500 to-orange-500",
     gender: "Seniors",
     genderColor: "bg-amber-500",
+  },
+  {
+    name: "Mini Marathon",
+    icon: "🏃",
+    color: "from-lime-400 to-green-600",
+    gender: "Mixed",
+    genderColor: "bg-lime-500",
   },
   {
     name: "Padel Men's",
@@ -197,6 +211,8 @@ export interface GameLimit {
   maxMale?: number;
   minFemale?: number;
   maxFemale?: number;
+  /** Players per team when a club enters several teams, e.g. bridge pairs; counts must fill whole teams */
+  teamSize?: number;
 }
 
 const ARM_WRESTLING_LIMIT: GameLimit = { min: 1, max: 2, maxChildren: 0 };
@@ -206,6 +222,8 @@ const POWER_LIFTING_LIMIT: GameLimit = { min: 1, max: 3, maxChildren: 0 };
 export const GAME_LIMITS: Record<string, GameLimit> = {
   ...Object.fromEntries([...ARM_WRESTLING_MALE, ...ARM_WRESTLING_FEMALE].map((n) => [n, ARM_WRESTLING_LIMIT])),
   ...Object.fromEntries(POWER_LIFTING.map((n) => [n, POWER_LIFTING_LIMIT])),
+  "Auction Bridge": { min: 2, max: 4, maxChildren: 0, teamSize: 2 },
+  "Mini Marathon": { min: 4, max: 5, maxChildren: 0 },
   "Basketball Women's": { min: 5, max: 12, maxChildren: 2 },
   "Badminton Team Event (Men's)": { min: 6, max: 7, maxChildren: 1 },
   "Badminton Women's & Mixed Doubles": { min: 5, max: 6, maxChildren: 1 },

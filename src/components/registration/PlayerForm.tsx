@@ -354,6 +354,7 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                         {c.players}/{g.max} players
                         {g.maxChildren > 0 ? ` · ${c.children}/${g.maxChildren} children` : ' · no children'}
                         {g.min > 0 ? ` · min ${g.min}` : ''}
+                        {g.teamSize ? ` · teams of ${g.teamSize} (max ${g.max / g.teamSize} teams)` : ''}
                         {g.maxMale !== undefined ? ` · ${c.male}/${g.maxMale} male` : ''}
                         {g.maxFemale !== undefined ? ` · ${c.female}/${g.maxFemale} female` : ''}
                       </span>

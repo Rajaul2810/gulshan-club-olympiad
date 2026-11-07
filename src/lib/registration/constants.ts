@@ -138,6 +138,9 @@ export function shortfall(g: Game, c: GameCount): string[] {
   if (female) needs.push(`${female} more female`);
   const other = g.min - c.players - male - female;
   if (other > 0) needs.push(`${other} more`);
+  else if (g.teamSize && c.players % g.teamSize) {
+    needs.push(`${g.teamSize - (c.players % g.teamSize)} more to complete a team`);
+  }
   return needs;
 }
 
