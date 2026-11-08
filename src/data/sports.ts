@@ -223,7 +223,7 @@ export const GAME_LIMITS: Record<string, GameLimit> = {
   ...Object.fromEntries([...ARM_WRESTLING_MALE, ...ARM_WRESTLING_FEMALE].map((n) => [n, ARM_WRESTLING_LIMIT])),
   ...Object.fromEntries(POWER_LIFTING.map((n) => [n, POWER_LIFTING_LIMIT])),
   "Auction Bridge": { min: 2, max: 4, maxChildren: 0, teamSize: 2 },
-  "Mini Marathon": { min: 4, max: 5, maxChildren: 0 },
+  "Mini Marathon": { min: 4, max: 5, maxChildren: 3 },
   "Basketball Women's": { min: 5, max: 12, maxChildren: 2 },
   "Badminton Team Event (Men's)": { min: 6, max: 7, maxChildren: 1 },
   "Badminton Women's & Mixed Doubles": { min: 5, max: 6, maxChildren: 1 },
