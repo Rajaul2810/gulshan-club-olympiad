@@ -228,7 +228,7 @@ export const GAME_LIMITS: Record<string, GameLimit> = {
   "Badminton Team Event (Men's)": { min: 6, max: 7, maxChildren: 1 },
   "Badminton Women's & Mixed Doubles": { min: 5, max: 6, maxChildren: 1 },
   "Billiards Team Event": { min: 2, max: 3, maxChildren: 0 },
-  "Cricket (T-10)": { min: 11, max: 15, maxChildren: 2 },
+  "Cricket (T-10)": { min: 11, max: 15, maxChildren: 3 },
   "Chess": { min: 1, max: 2, maxChildren: 1 },
   "Football Men (7 a Side)": { min: 7, max: 11, maxChildren: 3 },
   "Golf Team Event Regular": { min: 2, max: 3, maxChildren: 0 },

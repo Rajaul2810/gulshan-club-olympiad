@@ -67,6 +67,7 @@ export const SPONSORS_BY_YEAR: Record<number, YearSponsors> = {
 
       { tier: 'Silver', name: 'BRAC Bank PLC', logo: `${DIR_2026}/silver.jpeg` },
       { tier: 'Silver', name: 'Mutual Trust Bank PLC', logo: `${DIR_2026}/silver2.jpeg` },
+      { tier: 'Silver', name: 'GAC', logo: `${DIR_2026}/silver3.jpeg` },
     ],
     partners: [],
   },
