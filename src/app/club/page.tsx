@@ -75,8 +75,7 @@ const ClubPage = () => {
                     </div>
 
                     <Link
-                      href={"http://www.dhakasoft.net/myweb01/defaultgcl"}
-                      target="_blank"
+                      href={`/registration/${club.slug}`}
                       className="mt-auto px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-full shadow hover:from-orange-600 hover:to-pink-600 transition-all duration-300 hover:scale-105"
                     >
                       Participate
