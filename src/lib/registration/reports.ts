@@ -84,7 +84,8 @@ function clubList(players: Player[]): Report {
 }
 
 function clubSummary(players: Player[]): Report {
-  const rows = groupBy(players, clubName).map(([club, list]) => [
+  const rows = groupBy(players, clubName).map(([club, list], i) => [
+    i + 1,
     club,
     list.length,
     count(list, (p) => p.gender === 'male'),
@@ -92,6 +93,7 @@ function clubSummary(players: Player[]): Report {
     count(list, (p) => p.member_type === 'member'),
     count(list, (p) => p.member_type === 'spouse'),
     count(list, (p) => p.member_type === 'child'),
+    count(list, (p) => p.member_type === 'friend'),
     count(list, (p) => p.role === 'player'),
     count(list, (p) => p.role === 'team_manager'),
     list.reduce((n, p) => n + p.games.length, 0),
@@ -105,9 +107,9 @@ function clubSummary(players: Player[]): Report {
     sections: [
       {
         title: 'Club-wise Count',
-        head: ['Club', 'Players', 'Male', 'Female', 'Members', 'Spouses', 'Children', 'Player Role', 'Team Managers', 'Game Entries'],
+        head: ['#', 'Club', 'Players', 'Male', 'Female', 'Members', 'Spouses', 'Children', 'Friends', 'Player Role', 'Team Managers', 'Game Entries'],
         body: rows,
-        foot: ['TOTAL', ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map(total)],
+        foot: ['', 'TOTAL', ...[2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(total)],
       },
     ],
   };

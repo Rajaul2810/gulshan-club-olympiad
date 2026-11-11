@@ -9,6 +9,7 @@ import {
   MAX_PHOTO_BYTES,
   MAX_PHOTO_LABEL,
   MEMBER_TYPE_OPTIONS,
+  FRIEND_GAMES,
   ROLE_OPTIONS,
   TSHIRT_CHART_IMAGE,
   TSHIRT_MEASUREMENTS,
@@ -108,8 +109,11 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
     setForm((f) => {
       const next = { ...f, [key]: value };
       if (key === 'gender' || key === 'member_type') {
-        const allowed = new Set(gamesForPlayer(next.gender, next.member_type).map((g) => g.name));
+        const allowedGames = gamesForPlayer(next.gender, next.member_type).map((g) => g.name);
+        const allowed = new Set(allowedGames);
         next.games = f.games.filter((g) => allowed.has(g));
+        // A friend has only one possible event, so pick it for them
+        if (next.member_type === 'friend' && next.games.length === 0 && allowedGames.length === 1) next.games = allowedGames;
       }
       return next;
     });
@@ -253,10 +257,22 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                   <select className={`${inputClass} ${border('member_type')}`} value={form.member_type} onChange={(e) => set('member_type', e.target.value as PlayerInput['member_type'])}>
                     <option className="bg-neutral-900" value="">Select type</option>
                     {MEMBER_TYPE_OPTIONS.map((o) => (
-                      <option className="bg-neutral-900" key={o.value} value={o.value}>{o.label}</option>
+                      <option className="bg-neutral-900" key={o.value} value={o.value}>
+                        {o.value === 'friend' ? `${o.label} (${FRIEND_GAMES.join(', ')} only)` : o.label}
+                      </option>
                     ))}
                   </select>
                 </Field>
+                {form.member_type === 'friend' && (
+                  <div className="sm:col-span-2 flex gap-3 px-4 py-3 rounded-xl border border-pink-400/40 bg-pink-500/10 text-sm text-pink-100">
+                    <span className="text-lg leading-none">🏀</span>
+                    <span>
+                      A <b>Member&apos;s Friend</b> can only play <b>{FRIEND_GAMES.join(', ')}</b>
+                      {form.gender === 'male' ? ' — this event is for female players, so please check the gender.' : ', and it has been selected for you.'}{' '}
+                      Enter the A/C number of the club member who is inviting her.
+                    </span>
+                  </div>
+                )}
                 <Field label="Role" required error={errors.role}>
                   <select className={`${inputClass} ${border('role')}`} value={form.role} onChange={(e) => set('role', e.target.value as PlayerInput['role'])}>
                     <option className="bg-neutral-900" value="">Select role</option>
@@ -265,7 +281,11 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                     ))}
                   </select>
                 </Field>
-                <Field label={form.member_type === 'child' ? "Parent's Member A/C No." : 'Member A/C No.'} required error={errors.account_no}>
+                <Field
+                  label={form.member_type === 'child' ? "Parent's Member A/C No." : form.member_type === 'friend' ? "Inviting Member's A/C No." : 'Member A/C No.'}
+                  required
+                  error={errors.account_no}
+                >
                   <input
                     className={`${inputClass} ${border('account_no')}`}
                     value={form.account_no}
@@ -323,6 +343,7 @@ export default function PlayerForm({ clubName, player, endpoint, clubPlayers, on
                 <p className="text-gray-400 text-xs mt-1">
                   {form.gender ? 'Select every game this person will play.' : 'Select gender first to see the matching games.'}{' '}
                   {form.member_type === 'child' && 'Only games that allow children are shown. '}
+                  {form.member_type === 'friend' && "Only games open to a member's friend are shown. "}
                   <span className="text-white font-medium">{form.games.length} selected</span>
                 </p>
               </div>

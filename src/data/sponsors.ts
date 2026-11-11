@@ -13,6 +13,8 @@ export interface Partner {
 }
 
 export interface YearSponsors {
+  /** Highlighted partners shown above the venue partner */
+  featured: Partner[];
   venue: string;
   sponsors: Sponsor[];
   partners: Partner[];
@@ -55,6 +57,10 @@ const VENUE = '/images/venue.png';
 
 export const SPONSORS_BY_YEAR: Record<number, YearSponsors> = {
   2026: {
+    featured: [
+      { tier: 'Broadcast Partner', name: 'T Sports', logo: `${DIR_2026}/TSports.jpeg` },
+      { tier: 'Apparel Partner', name: 'Turaag Active', logo: `${DIR_2026}/Turaag-Apparel%20Partner.jpeg` },
+    ],
     venue: VENUE,
     sponsors: [
       DIAMOND,
@@ -72,6 +78,7 @@ export const SPONSORS_BY_YEAR: Record<number, YearSponsors> = {
     partners: [],
   },
   2025: {
+    featured: [],
     venue: VENUE,
     sponsors: [
       DIAMOND,

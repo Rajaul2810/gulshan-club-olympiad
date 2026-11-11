@@ -7,7 +7,7 @@ import PlayerTable from '@/components/registration/PlayerTable';
 import { useEvent } from '@/contexts/EventContext';
 import { clearLocalAuth } from '@/lib/auth/adminAuth';
 import { api, ApiError } from '@/lib/registration/client';
-import { GAMES, GENDER_OPTIONS, ROLE_OPTIONS, labelOf, type Player } from '@/lib/registration/constants';
+import { GAMES, GENDER_OPTIONS, MEMBER_TYPE_OPTIONS, ROLE_OPTIONS, labelOf, type Player } from '@/lib/registration/constants';
 import { REPORTS, buildReport, exportExcel, exportPdf, type Report, type ReportKey } from '@/lib/registration/reports';
 
 const selectClass =
@@ -67,6 +67,7 @@ export default function AdminRegistrationsPage() {
   const [gameFilter, setGameFilter] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<Player | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -108,9 +109,10 @@ export default function AdminRegistrationsPage() {
         (!gameFilter || p.games.includes(gameFilter)) &&
         (!genderFilter || p.gender === genderFilter) &&
         (!roleFilter || p.role === roleFilter) &&
+        (!typeFilter || p.member_type === typeFilter) &&
         (!q || p.name.toLowerCase().includes(q) || p.phone.includes(q) || p.account_no.toLowerCase().includes(q) || (p.bgf_id ?? '').toLowerCase().includes(q))
     );
-  }, [players, clubFilter, gameFilter, genderFilter, roleFilter, search]);
+  }, [players, clubFilter, gameFilter, genderFilter, roleFilter, typeFilter, search]);
 
   /** Game reports only count the filtered game, other reports keep all of a player's games. */
   const reportFor = useCallback(
@@ -129,6 +131,7 @@ export default function AdminRegistrationsPage() {
     gameFilter && `Game: ${gameFilter}`,
     genderFilter && `Gender: ${labelOf(GENDER_OPTIONS, genderFilter as 'male')}`,
     roleFilter && `Role: ${labelOf(ROLE_OPTIONS, roleFilter as 'player')}`,
+    typeFilter && `Type: ${labelOf(MEMBER_TYPE_OPTIONS, typeFilter as 'member')}`,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -182,6 +185,7 @@ export default function AdminRegistrationsPage() {
     setGameFilter('');
     setGenderFilter('');
     setRoleFilter('');
+    setTypeFilter('');
     setSearch('');
   };
 
@@ -216,7 +220,7 @@ export default function AdminRegistrationsPage() {
           ))}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <select value={clubFilter} onChange={(e) => setClubFilter(e.target.value)} className={selectClass}>
             <option className="bg-neutral-900" value="">All clubs</option>
             {clubs.map(([id, name]) => (
@@ -238,6 +242,12 @@ export default function AdminRegistrationsPage() {
           <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className={selectClass}>
             <option className="bg-neutral-900" value="">All roles</option>
             {ROLE_OPTIONS.map((o) => (
+              <option className="bg-neutral-900" key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={selectClass}>
+            <option className="bg-neutral-900" value="">All types</option>
+            {MEMBER_TYPE_OPTIONS.map((o) => (
               <option className="bg-neutral-900" key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>

@@ -1,7 +1,7 @@
 import { GAME_LIMITS, sportsCategories, type GameLimit } from '@/data/sports';
 
 export type Gender = 'male' | 'female';
-export type MemberType = 'member' | 'spouse' | 'child';
+export type MemberType = 'member' | 'spouse' | 'child' | 'friend';
 export type PlayerRole = 'player' | 'team_manager';
 
 export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
@@ -13,6 +13,7 @@ export const MEMBER_TYPE_OPTIONS: { value: MemberType; label: string }[] = [
   { value: 'member', label: 'Member' },
   { value: 'spouse', label: 'Spouse' },
   { value: 'child', label: 'Child' },
+  { value: 'friend', label: "Member's Friend" },
 ];
 
 export const ROLE_OPTIONS: { value: PlayerRole; label: string }[] = [
@@ -43,7 +44,7 @@ export const PHOTO_BUCKET = 'player-photos';
 
 export const DECLARATION_POINTS = [
   'All information provided above is true and correct to the best of my knowledge.',
-  'I am a bona fide member (or the spouse or child of a member) of the club I am registering under, and I am not registered under any other club in this Olympiad.',
+  "I am a bona fide member (or the spouse or child of a member, or a member's invited friend where the event allows it) of the club I am registering under, and I am not registered under any other club in this Olympiad.",
   'For a child participant, the parent/guardian member gives consent and takes responsibility for the child.',
   'I am physically and medically fit to take part, and I participate at my own risk.',
   'I will abide by the rules, regulations and decisions of the organising committee and referees.',
@@ -72,9 +73,18 @@ function genderAllowed(g: Game, gender: Gender | '') {
   return true;
 }
 
-/** Games a person can pick: men/women-only games follow gender; children only see games that allow children. */
+/** Events a member's friend may play, e.g. Basketball Women's */
+export const FRIEND_GAMES = GAMES.filter((g) => g.allowFriends).map((g) => g.name);
+
+function typeAllowed(g: Game, memberType: MemberType | '') {
+  if (memberType === 'child') return g.maxChildren > 0;
+  if (memberType === 'friend') return Boolean(g.allowFriends);
+  return true;
+}
+
+/** Games a person can pick: men/women-only games follow gender; children and friends only see games that allow them. */
 export function gamesForPlayer(gender: Gender | '', memberType: MemberType | '') {
-  return GAMES.filter((g) => genderAllowed(g, gender) && (memberType !== 'child' || g.maxChildren > 0));
+  return GAMES.filter((g) => genderAllowed(g, gender) && typeAllowed(g, memberType));
 }
 
 export interface GameCount {
@@ -251,6 +261,9 @@ export function validatePlayer(input: PlayerInput) {
   else if (input.member_type === 'child') {
     const blocked = input.games.filter((g) => gameByName(g)?.maxChildren === 0);
     if (blocked.length) errors.games = `Children cannot play: ${blocked.join(', ')}`;
+  } else if (input.member_type === 'friend') {
+    const blocked = input.games.filter((g) => !FRIEND_GAMES.includes(g));
+    if (blocked.length) errors.games = `A member's friend can only play ${FRIEND_GAMES.join(', ')}`;
   }
   if (!input.declaration_accepted) errors.declaration_accepted = 'You must accept the declaration';
   return errors;

@@ -41,6 +41,7 @@ export default function PlayerTable({ players, showClub, canEdit, onEdit, onDele
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left text-gray-400 border-b border-white/10 bg-white/5">
+            <th className="pl-4 pr-2 py-3 font-medium w-10">#</th>
             <th className="px-4 py-3 font-medium">Player</th>
             {showClub && <th className="px-4 py-3 font-medium">Club</th>}
             <th className="px-4 py-3 font-medium">Phone</th>
@@ -51,8 +52,9 @@ export default function PlayerTable({ players, showClub, canEdit, onEdit, onDele
           </tr>
         </thead>
         <tbody>
-          {players.map((p) => (
+          {players.map((p, i) => (
             <tr key={p.id} className="border-b border-white/5 last:border-0 hover:bg-white/5 align-top">
+              <td className="pl-4 pr-2 py-3 pt-5 text-gray-500 tabular-nums">{i + 1}</td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Avatar player={p} />
@@ -69,7 +71,9 @@ export default function PlayerTable({ players, showClub, canEdit, onEdit, onDele
                   <span className={`px-2 py-0.5 rounded-full text-xs ${p.gender === 'male' ? 'bg-blue-500/20 text-blue-300' : 'bg-pink-500/20 text-pink-300'}`}>
                     {labelOf(GENDER_OPTIONS, p.gender)}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-xs bg-white/10 text-gray-300">{labelOf(MEMBER_TYPE_OPTIONS, p.member_type)}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs ${p.member_type === 'friend' ? 'bg-purple-500/20 text-purple-300' : 'bg-white/10 text-gray-300'}`}>
+                    {labelOf(MEMBER_TYPE_OPTIONS, p.member_type)}
+                  </span>
                   <span className={`px-2 py-0.5 rounded-full text-xs ${p.role === 'team_manager' ? 'bg-amber-500/20 text-amber-300' : 'bg-green-500/20 text-green-300'}`}>
                     {labelOf(ROLE_OPTIONS, p.role)}
                   </span>

@@ -59,7 +59,7 @@ function SponsorCard({ sponsor, index }: { sponsor: Sponsor; index: number }) {
 
 const SponsorSection = () => {
   const { eventLabel, year: selectedYear } = useEvent();
-  const { venue, sponsors, partners } = sponsorsForYear(selectedYear);
+  const { featured, venue, sponsors, partners } = sponsorsForYear(selectedYear);
 
   const tiers = TIER_ORDER.map((tier) => ({ tier, list: sponsors.filter((s) => s.tier === tier) })).filter((t) => t.list.length > 0);
 
@@ -96,6 +96,26 @@ const SponsorSection = () => {
             </div>
           ))}
         </div>
+
+        {featured.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-6 mt-16">
+            {featured.map((partner) => (
+              <div key={partner.logo} className="relative group w-full sm:w-72">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-pink-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                <div className="relative bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/20 shadow-2xl transition-all duration-500 group-hover:scale-105">
+                  <div className="bg-white rounded-2xl p-4">
+                    <div className="flex items-center justify-center h-24 sm:h-28">
+                      <Image src={partner.logo} alt={`${partner.name} Logo`} width={240} height={110} className="max-w-full max-h-full object-contain" />
+                    </div>
+                  </div>
+                  <p className="mt-4 text-center text-sm font-semibold uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-pink-300">
+                    {partner.tier}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="text-center my-16">
           <Image src={venue} alt="Venue Partner" width={200} height={200} className="w-75 h-75 object-contain mx-auto" />

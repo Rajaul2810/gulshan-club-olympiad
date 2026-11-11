@@ -213,6 +213,8 @@ export interface GameLimit {
   maxFemale?: number;
   /** Players per team when a club enters several teams, e.g. bridge pairs; counts must fill whole teams */
   teamSize?: number;
+  /** Event accepts a member's invited friend as a player */
+  allowFriends?: boolean;
 }
 
 const ARM_WRESTLING_LIMIT: GameLimit = { min: 1, max: 2, maxChildren: 0 };
@@ -224,7 +226,7 @@ export const GAME_LIMITS: Record<string, GameLimit> = {
   ...Object.fromEntries(POWER_LIFTING.map((n) => [n, POWER_LIFTING_LIMIT])),
   "Auction Bridge": { min: 2, max: 4, maxChildren: 0, teamSize: 2 },
   "Mini Marathon": { min: 4, max: 5, maxChildren: 3 },
-  "Basketball Women's": { min: 5, max: 12, maxChildren: 2 },
+  "Basketball Women's": { min: 5, max: 12, maxChildren: 2, allowFriends: true },
   "Badminton Team Event (Men's)": { min: 6, max: 7, maxChildren: 1 },
   "Badminton Women's & Mixed Doubles": { min: 5, max: 6, maxChildren: 1 },
   "Billiards Team Event": { min: 2, max: 3, maxChildren: 0 },
