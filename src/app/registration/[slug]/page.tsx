@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { api, ApiError } from '@/lib/registration/client';
-import { GAMES, type Player } from '@/lib/registration/constants';
+import { GAMES, LATE_EDIT_CLUB_SLUGS, type Player } from '@/lib/registration/constants';
 import TeamStatusCard from '@/components/registration/TeamStatusCard';
 import { buildReport, exportExcel, exportPdf } from '@/lib/registration/reports';
 import ClubLoginModal from '@/components/registration/ClubLoginModal';
@@ -149,6 +149,17 @@ export default function ClubRegistrationPage() {
 
   if (!data) return null;
   const { club, event, isOpen } = data;
+  const lateEdit = LATE_EDIT_CLUB_SLUGS.has(club.slug);
+  const deadlineLabel = event.registration_deadline
+    ? new Date(`${event.registration_deadline}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
+  const statusText = !isOpen
+    ? 'Registration closed — view and download only. Contact organisers for changes.'
+    : lateEdit && deadlineLabel
+      ? `Late registration open for your club (general deadline was ${deadlineLabel})`
+      : deadlineLabel
+        ? `Open until ${deadlineLabel}`
+        : 'Registration open';
   const exportMeta = { eventName: event.name, subtitle: club.name };
   const clubReport = () => ({ ...buildReport('unique', players), title: `${club.name} Participants` });
 
@@ -162,13 +173,12 @@ export default function ClubRegistrationPage() {
           <div className="flex-1">
             <p className="text-orange-400 text-sm font-medium">{event.name} · Player Registration</p>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">{club.name}</h1>
-            <p className={`text-sm mt-1 ${isOpen ? 'text-green-400' : 'text-red-400'}`}>
-              {isOpen
-                ? event.registration_deadline
-                  ? `Open until ${new Date(`${event.registration_deadline}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`
-                  : 'Registration open'
-                : 'Registration closed — view only'}
-            </p>
+            <p className={`text-sm mt-1 ${isOpen ? 'text-green-400' : 'text-red-400'}`}>{statusText}</p>
+            {!isOpen && (
+              <p className="text-xs text-white/50 mt-1">
+                Your player list is still available. Add, edit and delete are disabled.
+              </p>
+            )}
           </div>
           <div className="flex gap-2">
             <button onClick={logout} className="px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 text-sm">
@@ -240,7 +250,13 @@ export default function ClubRegistrationPage() {
           canEdit={isOpen}
           onEdit={(p) => setEditing(p)}
           onDelete={onDelete}
-          emptyText={players.length === 0 ? 'No players yet. Click "+ Add Player" to register your first player.' : 'No players match your search.'}
+          emptyText={
+            players.length === 0
+              ? isOpen
+                ? 'No players yet. Click "+ Add Player" to register your first player.'
+                : 'No players were registered for this club.'
+              : 'No players match your search.'
+          }
         />
       </main>
 

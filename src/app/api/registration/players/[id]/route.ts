@@ -15,7 +15,9 @@ type Params = { params: Promise<{ id: string }> };
 async function openEventForClub() {
   const session = await requireClub();
   const event = await getCurrentEvent();
-  if (!isRegistrationOpen(event)) throw new RegistrationError('Registration is closed. Contact the organisers for changes.', 403);
+  if (!isRegistrationOpen(event, session.slug)) {
+    throw new RegistrationError('Registration is closed. You can view your list, but only organisers can make changes.', 403);
+  }
   return { session, event };
 }
 

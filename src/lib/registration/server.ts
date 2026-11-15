@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { RegistrationError } from './errors';
 import {
+  LATE_EDIT_CLUB_SLUGS,
   MAX_PHOTO_BYTES,
   MAX_PHOTO_LABEL,
   PHOTO_BUCKET,
@@ -63,10 +64,16 @@ export async function getEventById(id: string): Promise<EventInfo> {
 }
 
 /** Deadline is inclusive and compared in Dhaka time. */
-export function isRegistrationOpen(event: EventInfo) {
+export function isDeadlineOpen(event: EventInfo) {
   if (!event.registration_deadline) return true;
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka' }).format(new Date());
   return today <= event.registration_deadline;
+}
+
+/** Open for everyone before the deadline; after that only LATE_EDIT_CLUB_SLUGS. */
+export function isRegistrationOpen(event: EventInfo, clubSlug?: string) {
+  if (clubSlug && LATE_EDIT_CLUB_SLUGS.has(clubSlug)) return true;
+  return isDeadlineOpen(event);
 }
 
 export async function getClubBySlug(slug: string): Promise<ClubInfo> {

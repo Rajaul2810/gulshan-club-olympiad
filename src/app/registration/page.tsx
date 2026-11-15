@@ -13,7 +13,7 @@ type ClubCard = { name: string; slug: string; logo: string };
 const STEPS = [
   { icon: '🏛️', title: 'Select your club', text: 'Find your club in the list below.' },
   { icon: '🔐', title: 'Log in', text: 'Use the username & password given by the organisers.' },
-  { icon: '📝', title: 'Register players', text: 'Add, edit or remove players any time before the deadline.' },
+  { icon: '📝', title: 'Register players', text: 'Add, edit or remove players while registration is open. After closing you can still view and download your list.' },
 ];
 
 function formatDate(date: string) {
@@ -62,7 +62,7 @@ const RegistrationPage = () => {
             <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
               {isOpen
                 ? `Register your club's players and team managers for ${eventLabel}.`
-                : `Registration for ${eventLabel} is closed. Clubs can still log in to view their registered players.`}
+                : `Registration for ${eventLabel} is closed. Clubs can still log in to view and download their list (no add, edit or delete).`}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 text-left">

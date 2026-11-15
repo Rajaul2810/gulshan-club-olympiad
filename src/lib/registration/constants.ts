@@ -26,6 +26,12 @@ export type TshirtSize = (typeof TSHIRT_SIZES)[number];
 
 export const TSHIRT_CHART_IMAGE = '/images/t-shirt-size.jpg';
 
+/** Host clubs allowed to edit after the global registration deadline. */
+export const LATE_EDIT_CLUB_SLUGS = new Set([
+  'gulshan-club-limited-avengers',
+  'gulshan-club-limited-warriors',
+]);
+
 /** Polo T-shirt, Asian size chart (inches), matches the chart image. */
 export const TSHIRT_MEASUREMENTS: Record<TshirtSize, { label: string; chest: number; length: number }> = {
   S: { label: 'S', chest: 19, length: 27 },
