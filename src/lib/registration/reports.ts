@@ -33,9 +33,20 @@ export interface Report {
   sheetPerSection?: boolean;
 }
 
-export type ReportKey = 'club-list' | 'club-summary' | 'game-list' | 'game-summary' | 'eligibility' | 'unique' | 'tshirt';
+export type ReportKey =
+  | 'club-events'
+  | 'event-clubs'
+  | 'club-list'
+  | 'club-summary'
+  | 'game-list'
+  | 'game-summary'
+  | 'eligibility'
+  | 'unique'
+  | 'tshirt';
 
 export const REPORTS: { key: ReportKey; label: string }[] = [
+  { key: 'club-events', label: 'Club-wise Event List' },
+  { key: 'event-clubs', label: 'Event-wise Club List' },
   { key: 'club-summary', label: 'Club-wise Count' },
   { key: 'club-list', label: 'Club-wise Participants' },
   { key: 'game-summary', label: 'Game-wise Count' },
@@ -64,6 +75,54 @@ function groupBy<K extends string>(items: Player[], key: (p: Player) => K | K[])
 }
 
 const count = (list: Player[], fn: (p: Player) => boolean) => list.filter(fn).length;
+
+/** Club carnival sheet: SL #, Event Name, Participant — one section per club. */
+function clubEvents(players: Player[]): Report {
+  const gameOrder = new Map(GAMES.map((g, i) => [g.name, i]));
+  const sections = groupBy(players, clubName).map(([club, list]) => {
+    const byGame = groupBy(list, (p) => p.games)
+      .sort(([a], [b]) => (gameOrder.get(a) ?? 999) - (gameOrder.get(b) ?? 999) || a.localeCompare(b))
+      .map(([game, entries], i) => [i + 1, game, entries.length] as Cell[]);
+    const total = byGame.reduce((n, row) => n + (row[2] as number), 0);
+    return {
+      title: club,
+      head: ['SL #', 'Event Name', 'Participant'],
+      body: byGame,
+      foot: ['', 'Total', total] as Cell[],
+    };
+  });
+  return {
+    key: 'club-events',
+    title: 'Club-wise Event List',
+    description: 'Per club: each event with participant count, then club total (same layout as the carnival event list).',
+    sheetPerSection: true,
+    sections,
+  };
+}
+
+/** Event carnival sheet: SL #, Name of Club, Participant — one section per event. */
+function eventClubs(players: Player[]): Report {
+  const gameOrder = new Map(GAMES.map((g, i) => [g.name, i]));
+  const sections = groupBy(players, (p) => p.games)
+    .sort(([a], [b]) => (gameOrder.get(a) ?? 999) - (gameOrder.get(b) ?? 999) || a.localeCompare(b))
+    .map(([game, list]) => {
+      const byClub = groupBy(list, clubName).map(([club, entries], i) => [i + 1, club, entries.length] as Cell[]);
+      const total = byClub.reduce((n, row) => n + (row[2] as number), 0);
+      return {
+        title: game,
+        head: ['SL #', 'Name of Club', 'Participant'],
+        body: byClub,
+        foot: ['', 'Total', total] as Cell[],
+      };
+    });
+  return {
+    key: 'event-clubs',
+    title: 'Event-wise Club List',
+    description: 'Per event: each club with participant count, then event total (same layout as the carnival club list).',
+    sheetPerSection: true,
+    sections,
+  };
+}
 
 function clubList(players: Player[]): Report {
   const head = ['#', 'Name', 'Phone', 'Gender', 'Type', 'Role', 'A/C No', 'T-shirt', 'Games'];
@@ -261,6 +320,8 @@ function eligibility(players: Player[]): Report {
 
 const BUILDERS: Record<ReportKey, (players: Player[]) => Report> = {
   eligibility,
+  'club-events': clubEvents,
+  'event-clubs': eventClubs,
   'club-list': clubList,
   'club-summary': clubSummary,
   'game-list': gameList,
@@ -294,7 +355,7 @@ export async function exportPdf(report: Report, meta: ExportMeta) {
 
   let y = 72;
   for (const section of report.sections) {
-    if (report.sections.length > 1) {
+    if (report.sheetPerSection || report.sections.length > 1) {
       if (y > doc.internal.pageSize.getHeight() - 80) {
         doc.addPage();
         y = 40;

@@ -21,7 +21,9 @@ function ReportPreview({ report }: { report: Report }) {
     <div className="space-y-6">
       {report.sections.map((s) => (
         <div key={s.title} className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-          {report.sections.length > 1 && <div className="px-4 py-3 bg-white/5 text-white font-semibold border-b border-white/10">{s.title}</div>}
+          {(report.sheetPerSection || report.sections.length > 1) && (
+            <div className="px-4 py-3 bg-white/5 text-white font-semibold border-b border-white/10">{s.title}</div>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -62,7 +64,7 @@ export default function AdminRegistrationsPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [tab, setTab] = useState<ReportKey>('club-summary');
+  const [tab, setTab] = useState<ReportKey>('club-events');
   const [clubFilter, setClubFilter] = useState('');
   const [gameFilter, setGameFilter] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
@@ -117,7 +119,7 @@ export default function AdminRegistrationsPage() {
   /** Game reports only count the filtered game, other reports keep all of a player's games. */
   const reportFor = useCallback(
     (key: ReportKey) => {
-      const isGameReport = key === 'game-list' || key === 'game-summary';
+      const isGameReport = key === 'game-list' || key === 'game-summary' || key === 'event-clubs';
       const list = gameFilter && isGameReport ? filtered.map((p) => ({ ...p, games: [gameFilter] })) : filtered;
       return buildReport(key, list);
     },
@@ -159,7 +161,7 @@ export default function AdminRegistrationsPage() {
   const downloadAll = () =>
     run(() =>
       exportExcel(
-        (['club-summary', 'game-summary', 'eligibility', 'tshirt', 'unique'] as ReportKey[]).map(reportFor),
+        (['club-events', 'event-clubs', 'club-summary', 'game-summary', 'eligibility', 'tshirt', 'unique'] as ReportKey[]).map(reportFor),
         meta,
         'Registration_Summary'
       )
