@@ -55,6 +55,7 @@ interface EventContextValue {
   setSelectedYear: (year: number) => void;
   createEvent: (year: number, makeCurrent?: boolean) => Promise<{ data: EventRow | null; error: string | null }>;
   setCurrentEvent: (year: number) => Promise<{ error: string | null }>;
+  updateRegistrationDeadline: (eventId: string, deadline: string | null) => Promise<{ error: string | null }>;
   refetch: () => Promise<void>;
 }
 
@@ -209,6 +210,32 @@ export function EventProvider({ children }: { children: ReactNode }) {
     [fetchEvents, isFallback, setSelectedYear]
   );
 
+  const updateRegistrationDeadline = useCallback(
+    async (eventId: string, deadline: string | null) => {
+      if (isFallback) {
+        return { error: 'Run EVENTS_MIGRATION.sql in Supabase first.' };
+      }
+
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: updateError } = await (supabase as any)
+          .from('events')
+          .update({ registration_deadline: deadline })
+          .eq('id', eventId);
+
+        if (updateError) throw updateError;
+
+        await fetchEvents();
+        return { error: null };
+      } catch (err) {
+        return {
+          error: err instanceof Error ? err.message : 'Failed to update registration deadline',
+        };
+      }
+    },
+    [fetchEvents, isFallback]
+  );
+
   const value = useMemo<EventContextValue>(
     () => ({
       events,
@@ -222,6 +249,7 @@ export function EventProvider({ children }: { children: ReactNode }) {
       setSelectedYear,
       createEvent,
       setCurrentEvent,
+      updateRegistrationDeadline,
       refetch: fetchEvents,
     }),
     [
@@ -233,6 +261,7 @@ export function EventProvider({ children }: { children: ReactNode }) {
       setSelectedYear,
       createEvent,
       setCurrentEvent,
+      updateRegistrationDeadline,
       fetchEvents,
     ]
   );

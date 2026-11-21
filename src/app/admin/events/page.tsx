@@ -1,9 +1,18 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useEvent } from '@/contexts/EventContext';
 import { ErrorMessage, SuccessMessage } from '@/components/ui/ErrorMessage';
+
+function formatDeadline(date: string | null) {
+  if (!date) return 'No deadline (always open)';
+  return new Date(`${date}T00:00:00`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
 
 export default function AdminEventsPage() {
   const {
@@ -15,13 +24,20 @@ export default function AdminEventsPage() {
     createEvent,
     setCurrentEvent,
     setSelectedYear,
+    updateRegistrationDeadline,
   } = useEvent();
 
   const [newYear, setNewYear] = useState(new Date().getFullYear() + 1);
   const [makeCurrent, setMakeCurrent] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [deadlineSaving, setDeadlineSaving] = useState(false);
+  const [deadline, setDeadline] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDeadline(selectedEvent?.registration_deadline ?? '');
+  }, [selectedEvent?.id, selectedEvent?.registration_deadline]);
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
@@ -49,6 +65,28 @@ export default function AdminEventsPage() {
     } else {
       setSuccess(`Olympiad ${eventYear} is now the current event.`);
     }
+  };
+
+  const handleSaveDeadline = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedEvent || selectedEvent.id.startsWith('fallback-')) return;
+
+    setDeadlineSaving(true);
+    setError(null);
+    setSuccess(null);
+
+    const value = deadline.trim() || null;
+    const { error: saveError } = await updateRegistrationDeadline(selectedEvent.id, value);
+    if (saveError) {
+      setError(saveError);
+    } else {
+      setSuccess(
+        value
+          ? `Registration deadline for ${selectedEvent.name} set to ${formatDeadline(value)}.`
+          : `Registration deadline cleared for ${selectedEvent.name} (always open).`
+      );
+    }
+    setDeadlineSaving(false);
   };
 
   return (
@@ -109,13 +147,49 @@ export default function AdminEventsPage() {
 
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-2">Currently managing</h2>
-            <p className="text-3xl font-bold text-orange-400 mb-6">
+            <p className="text-3xl font-bold text-orange-400 mb-2">
               {loading ? '...' : selectedEvent?.name || year}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 mb-6">
               Use the year switcher in the admin header to change which year fixtures, results,
               media, and press are loaded and saved into.
             </p>
+
+            <form onSubmit={handleSaveDeadline} className="space-y-3 border-t border-white/10 pt-5">
+              <h3 className="text-white font-semibold">Registration deadline</h3>
+              <p className="text-sm text-gray-400">
+                Clubs can add or edit players until this date (inclusive, Dhaka time). Clear the date
+                to keep registration always open. After the deadline, only Gulshan Avengers &amp;
+                Warriors can still edit.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="date"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  disabled={isFallback || !selectedEvent}
+                  className="flex-1 rounded-lg bg-neutral-900 border border-white/20 px-4 py-3 text-white disabled:opacity-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => setDeadline('')}
+                  disabled={isFallback || !deadline}
+                  className="rounded-lg bg-white/10 hover:bg-white/20 px-4 py-3 text-sm text-gray-300 disabled:opacity-40"
+                >
+                  Clear
+                </button>
+                <button
+                  type="submit"
+                  disabled={deadlineSaving || isFallback || !selectedEvent}
+                  className="rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-5 py-3 font-semibold text-white disabled:opacity-50"
+                >
+                  {deadlineSaving ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500">
+                Current: {formatDeadline(selectedEvent?.registration_deadline ?? null)}
+              </p>
+            </form>
           </div>
         </div>
 
@@ -133,7 +207,7 @@ export default function AdminEventsPage() {
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4"
                 >
                   <div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <h3 className="text-white font-semibold text-lg">{event.name}</h3>
                       {event.is_current && (
                         <span className="rounded bg-orange-500/20 text-orange-300 text-xs px-2 py-1">
@@ -147,6 +221,9 @@ export default function AdminEventsPage() {
                       )}
                     </div>
                     <p className="text-sm text-gray-400 mt-1 capitalize">Status: {event.status}</p>
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      Registration: {formatDeadline(event.registration_deadline)}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <button
